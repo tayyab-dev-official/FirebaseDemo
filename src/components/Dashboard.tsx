@@ -6,19 +6,25 @@ import { FaUserCircle } from "react-icons/fa";
 import { useState, useEffect } from "react";
 
 import { moods } from "../moods";
+import PostFilters from './PostFilters'
+
+import { 
+  startOfDay,
+  endOfDay,
+  startOfWeek,
+  startOfMonth
+} from 'date-fns'
 
 import {
   collection,
   addDoc,
   serverTimestamp,
-  getDocs,
   Timestamp,
   onSnapshot,
   query,
-  where
-  // doc,
-  // setDoc
-  // updateDoc
+  where,
+  orderBy,
+  getDocs
 } from "firebase/firestore";
 import { db } from "../firebase";
 
@@ -33,12 +39,11 @@ type Post = {
 };
 
 export default function Dashboard() {
-  const [moodState, setMoodState] = useState<string | undefined>(undefined);
-
-  const [posts, setPosts] = useState<Post[]>([]);
-
+  const [moodState, setMoodState] = useState<string | undefined>(undefined)
+  const [posts, setPosts] = useState<Post[]>([])
+  const [postFilter, setPostFilter] = useState<undefined | string>(undefined)
+  
   const { auth, user, setUser, updateProfile, setUpdateProfile } = useAuth();
-
   const photoURL = user?.photoURL || "";
 
   const moodEls = moods.map((mood) => {
@@ -252,14 +257,65 @@ export default function Dashboard() {
   }
 
   useEffect(() => {
-    const postsRef = collection(db, "posts")
-    const postsQuery = query(postsRef, where("uid", "==" , user?.uid))
+    if (!user?.uid) return;
+    const postsRef = collection(db, "posts");
+    const isUserLoggedIn = where("uid", "==", user.uid);
+    const filter = postFilter?.toLowerCase();
     
-    const unsubscribe = onSnapshot(postsQuery, (postsSnapshot) => {
-      const firebasePostList: Post[] = postsSnapshot.docs.map((post) => {
-        const data = post.data() as Record<string, unknown>;
+    let activeQuery;
+    if (filter === "today") {
+      const today = new Date()
+      const dayStart = startOfDay(today)
+      const dayEnd = endOfDay(today)
+      const isStartOfTheDay = where("createdAt", ">=", dayStart);
+      const isEndOfTheDay = where("createdAt", "<=", dayEnd);
+      
+      activeQuery = query(
+        postsRef,
+        isUserLoggedIn,
+        isStartOfTheDay,
+        isEndOfTheDay,
+        orderBy("createdAt", "desc")
+      );
+    } 
+    else if (filter === "week") {
+      const today = new Date();
+
+      const lastMonday = startOfWeek(today, { weekStartsOn: 1 });
+      const dayEnd = endOfDay(today);
+
+      activeQuery = query(
+        postsRef,
+        isUserLoggedIn,
+        where("createdAt", ">=", lastMonday),
+        where("createdAt", "<=", dayEnd),
+        orderBy("createdAt", "desc")
+      );
+    } else if (filter === "month") {
+      const today = new Date();
+
+      const monthStart = startOfMonth(today);
+      const dayEnd = endOfDay(today);
+
+      activeQuery = query(
+        postsRef,
+        isUserLoggedIn,
+        where("createdAt", ">=", monthStart),
+        where("createdAt", "<=", dayEnd),
+        orderBy("createdAt", "desc")
+      );
+    } else {
+      activeQuery = query(
+        postsRef,
+        isUserLoggedIn,
+        orderBy("createdAt", "desc")
+      );
+    }
+    const unsubscribe = onSnapshot(activeQuery, (postsSnapshot) => {
+      const firebasePostList: Post[] = postsSnapshot.docs.map((docSnapshot) => {
+        const data = docSnapshot.data() as Record<string, unknown>;
         return {
-          id: post.id,
+          id: docSnapshot.id,
           userName: (data.userName as string) ?? "",
           userPhotoURL: (data.userPhotoURL as string) ?? "",
           createdAt: (data.createdAt as Timestamp) ?? null,
@@ -273,7 +329,8 @@ export default function Dashboard() {
     });
 
     return () => unsubscribe();
-  }, []);
+    
+  }, [postFilter, user?.uid]);
 
   // Scroll textarea into view on mount
   useEffect(() => {
@@ -358,6 +415,7 @@ export default function Dashboard() {
                   Fetch posts
                 </button> */}
             </div>
+            <PostFilters updateFilter={setPostFilter}/>
             <div
               id="posts-container"
               className="flex flex-wrap items-center justify-between gap-4"
