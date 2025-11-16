@@ -117,13 +117,16 @@ export default function Dashboard() {
             <span className="text-3xl ml-auto">{foundMood.emoji}</span>
           )}
         </div>
-        <div id="post-body" className="text-xl">
+        <div id="post-body" className="w-full text-xl flex flex-wrap">
           {post.body.split(/\r\n|\n/g).map((line, index) => {
             const urlRegex = /(https?:\/\/[^\s]+)/g;
             const parts = line.split(urlRegex);
 
             return (
-              <p key={index}>
+              <p 
+                key={index}
+                
+                >
                 {line ? (
                   parts.map((part, partIndex) =>
                     urlRegex.test(part) ? (
@@ -132,7 +135,7 @@ export default function Dashboard() {
                         href={part}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-600 underline hover:text-blue-800 cursor-pointer"
+                        className="text-blue-600 underline hover:text-blue-800 cursor-pointer break-all"
                       >
                         {part}
                       </a>
