@@ -279,7 +279,7 @@ export default function Dashboard() {
             Welcome {user ? user.displayName : "User"}
           </h2>
           <section className="w-full my-8 flex flex-col gap-6 p-2">
-            <div id="mood-container" className="flex ring-2 flex-wrap justify-center gap-2">
+            <div id="mood-container" className="flex flex-wrap justify-center gap-2">
               {moodEls}
             </div>
             <textarea
