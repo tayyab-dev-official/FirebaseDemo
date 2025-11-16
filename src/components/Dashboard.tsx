@@ -244,7 +244,7 @@ export default function Dashboard() {
 
   return (
     <>
-      <nav className="absolute top-4 right-6 flex gap-2 flex-col items-center justify-center bg-amber-100 p-2 rounded-l-md">
+      <nav className="sm:absolute sm:top-4 sm:right-6 flex gap-2 flex-col items-center justify-center bg-amber-100 p-2 rounded-l-md">
         <div id="img-container" className="w-[50px] h-[50px] ">
           {photoURL ? (
             <img
@@ -274,12 +274,12 @@ export default function Dashboard() {
       {updateProfile ? (
         <Profile />
       ) : (
-        <div className="w-1/2 mx-auto flex flex-col justify-center">
+        <div className="w-full sm:w-1/2 p-2 flex flex-col justify-center">
           <h2 className="text-xl font-semibold p-2">
             Welcome {user ? user.displayName : "User"}
           </h2>
-          <section className="w-full my-8 mx-auto flex flex-col gap-6 p-2">
-            <div id="mood-container" className="flex gap-2">
+          <section className="w-full my-8 flex flex-col gap-6 p-2">
+            <div id="mood-container" className="flex ring-2 flex-wrap justify-center gap-2">
               {moodEls}
             </div>
             <textarea
