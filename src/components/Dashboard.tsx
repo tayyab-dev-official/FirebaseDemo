@@ -118,9 +118,34 @@ export default function Dashboard() {
           )}
         </div>
         <div id="post-body" className="text-xl">
-          {post.body.split(/\r\n|\n/g).map((line, index) => (
-            <p key={index}>{line ? line : <br />}</p>
-          ))}
+          {post.body.split(/\r\n|\n/g).map((line, index) => {
+            const urlRegex = /(https?:\/\/[^\s]+)/g;
+            const parts = line.split(urlRegex);
+
+            return (
+              <p key={index}>
+                {line ? (
+                  parts.map((part, partIndex) =>
+                    urlRegex.test(part) ? (
+                      <a
+                        key={partIndex}
+                        href={part}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 underline hover:text-blue-800 cursor-pointer"
+                      >
+                        {part}
+                      </a>
+                    ) : (
+                      <span key={partIndex}>{part}</span>
+                    )
+                  )
+                ) : (
+                  <br />
+                )}
+              </p>
+            );
+          })}
         </div>
       </div>
     );
