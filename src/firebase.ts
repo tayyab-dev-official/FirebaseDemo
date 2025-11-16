@@ -11,10 +11,6 @@ const firebaseConfig = {
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
 };
 
-// Helpful debug output when running the dev server.
-console.log("firebaseConfig:", firebaseConfig);
-console.log("import.meta.env sample:", import.meta.env);
-
 if (!firebaseConfig.apiKey) {
   console.warn(
     "Firebase config values are empty — ensure you have a .env with VITE_FIREBASE_* keys and restart the Vite dev server."
