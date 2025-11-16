@@ -14,6 +14,8 @@ import {
   getDocs,
   Timestamp,
   onSnapshot,
+  query,
+  where
   // doc,
   // setDoc
   // updateDoc
@@ -250,11 +252,14 @@ export default function Dashboard() {
   }
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, "posts"), (postsSnapshot) => {
-      const firebasePostList: Post[] = postsSnapshot.docs.map((d) => {
-        const data = d.data() as Record<string, unknown>;
+    const postsRef = collection(db, "posts")
+    const postsQuery = query(postsRef, where("uid", "==" , user?.uid))
+    
+    const unsubscribe = onSnapshot(postsQuery, (postsSnapshot) => {
+      const firebasePostList: Post[] = postsSnapshot.docs.map((post) => {
+        const data = post.data() as Record<string, unknown>;
         return {
-          id: d.id,
+          id: post.id,
           userName: (data.userName as string) ?? "",
           userPhotoURL: (data.userPhotoURL as string) ?? "",
           createdAt: (data.createdAt as Timestamp) ?? null,

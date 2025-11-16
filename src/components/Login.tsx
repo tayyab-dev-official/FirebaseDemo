@@ -4,14 +4,13 @@ import {
   createUserWithEmailAndPassword,
   updateProfile,
   signInWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider
+  signInWithPopup
 } from "firebase/auth"
 import type { AuthError } from "firebase/auth"
 import { useAuth } from "../hooks/useAuth";
 
 export default function LogIn() {
-  const { auth, setUser } = useAuth()
+  const { auth, setUser, provider } = useAuth()
 
   function handleClick(event: React.MouseEvent<HTMLButtonElement>) {
     const { id } = event.currentTarget
@@ -114,7 +113,6 @@ export default function LogIn() {
 
   async function signInWithGoogle() {
     try {
-      const provider = new GoogleAuthProvider()
       const result = await signInWithPopup(auth, provider)
       // const credential = GoogleAuthProvider.credentialFromResult(result)
       // const token = credential?.accessToken

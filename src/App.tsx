@@ -36,7 +36,7 @@ export default function App() {
         className="
           w-full           
           sm:mx-auto
-          mt-[40%] md:mt-[20%]
+          mt-[20%] lg:mt-[10%]
           flex flex-col justify-center items-center gap-4
         "
       >

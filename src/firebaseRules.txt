@@ -2,6 +2,15 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    function isUserLoggedIn() {
+        return request.auth != null;
+    }
+
+    function isUserAuthorOfPost(){
+        return request.auth.uid == resource.data.uid;
+    }
+
     // Deny all read and write access requests.
     match /{document=**} {
       allow read, write: if false;
@@ -10,6 +19,12 @@ service cloud.firestore {
     // All authenticated users 
     match /{document=**} {
       allow read, write: if request.auth != null;
+    }
+
+    // All posts of logged-in user only
+    match /{document=**} {
+        allow write: if isUserLoggedIn();
+        allow read: if isUserLoggedIn() && isUserAuthorOfPost();
     }
 
     // Allow only authenticated content owners access
