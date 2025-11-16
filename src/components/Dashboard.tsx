@@ -69,7 +69,7 @@ export default function Dashboard() {
   const postsEl = posts.map((post) => {
     const foundMood =
       moods.find((storedMood) => storedMood.id === post.mood) || "😁";
-    const options = {
+    const options: Intl.DateTimeFormatOptions = {
       year: "numeric",
       month: "short",
       day: "numeric",
@@ -178,14 +178,20 @@ export default function Dashboard() {
       const firebasePostsRef = await getDocs(collection(db, "posts"));
       console.log(firebasePostsRef.docs.length);
 
-      setPosts([]);
-      firebasePostsRef.forEach((post) => {
-        const newPost: Post = {
-          id: post.id,
-          ...post.data(),
+      const list: Post[] = firebasePostsRef.docs.map((d) => {
+        const data = d.data() as Record<string, unknown>;
+        return {
+          id: d.id,
+          userName: (data.userName as string) ?? "",
+          userPhotoURL: (data.userPhotoURL as string) ?? "",
+          createdAt: (data.createdAt as Timestamp) ?? null,
+          mood: (data.mood as string | undefined) ?? undefined,
+          uid: (data.uid as string) ?? "",
+          body: (data.body as string) ?? "",
         };
-        setPosts((prevPosts) => [...prevPosts, newPost]);
       });
+
+      setPosts(list);
     }
   }
 
@@ -217,10 +223,16 @@ export default function Dashboard() {
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, "posts"), (postsSnapshot) => {
-      const firebasePostList: Post[] = postsSnapshot.docs.map((post) => {
+      const firebasePostList: Post[] = postsSnapshot.docs.map((d) => {
+        const data = d.data() as Record<string, unknown>;
         return {
-          id: post.id,
-          ...post.data(),
+          id: d.id,
+          userName: (data.userName as string) ?? "",
+          userPhotoURL: (data.userPhotoURL as string) ?? "",
+          createdAt: (data.createdAt as Timestamp) ?? null,
+          mood: (data.mood as string | undefined) ?? undefined,
+          uid: (data.uid as string) ?? "",
+          body: (data.body as string) ?? "",
         };
       });
 
