@@ -274,12 +274,12 @@ export default function Dashboard() {
       {updateProfile ? (
         <Profile />
       ) : (
-        <div className="w-full sm:w-1/2 p-2 flex flex-col justify-center">
+        <div className="w-full min-w-[350px] sm:max-w-[700px] p-2 flex flex-col justify-center">
           <h2 className="text-xl font-semibold p-2">
             Welcome {user ? user.displayName : "User"}
           </h2>
           <section className="w-full my-8 flex flex-col gap-6 p-2">
-            <div id="mood-container" className="flex flex-wrap justify-center gap-2">
+            <div id="mood-container" className="flex flex-wrap gap-2 justify-center">
               {moodEls}
             </div>
             <textarea
