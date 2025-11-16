@@ -34,9 +34,8 @@ type Post = {
 
 export default function Dashboard() {
     const [moodState, setMoodState] = useState<string | undefined>(undefined)
-    const [posts, setPosts] = useState<Post[]>([])
 
-    console.log(`[DASHBOARD] posts length: ${posts.length}`);
+    const [posts, setPosts] = useState<Post[]>([])
 
     const { 
         auth, 
@@ -215,7 +214,6 @@ export default function Dashboard() {
         if (auth && typeof auth !=="boolean") {
             await signOut(auth)
             setUser(null)
-            setPosts([])
         }
       } catch (error) {
         if (error instanceof Error) {
@@ -228,22 +226,17 @@ export default function Dashboard() {
 
     useEffect(() => {
       const unsubscribe = onSnapshot(collection(db, "posts"), (postsSnapshot)=> {
-        console.log(`Getting posts from firebase...`)
-        const postsList: Post [] = postsSnapshot.docs.map((post) => {
+        const firebasePostList: Post [] = postsSnapshot.docs.map((post) => {
           return {
             id: post.id,
             ...post.data()
           }
         })
-        console.log(`setting posts.`)
-        setPosts(postsList);
+
+        setPosts(firebasePostList);
       })
 
-      return () => {
-        console.log(`[DASHBOARD] removing listener for firestore...`)
-        unsubscribe()
-        console.log(`[DASHBOARD] removed listener for firestore.`); 
-      }
+      return () => unsubscribe()
     }, [])
 
     return (
