@@ -242,6 +242,16 @@ export default function Dashboard() {
     return () => unsubscribe();
   }, []);
 
+  // Scroll textarea into view on mount
+  useEffect(() => {
+    const postArea = document.querySelector(
+      "#post-area"
+    ) as HTMLTextAreaElement;
+    if (postArea) {
+      postArea.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, []);
+
   return (
     <>
       <nav className="sm:absolute sm:top-4 sm:right-6 flex gap-2 flex-col items-center justify-center bg-amber-100 p-2 rounded-l-md">
@@ -279,7 +289,10 @@ export default function Dashboard() {
             Welcome {user ? user.displayName : "User"}
           </h2>
           <section className="w-full my-8 flex flex-col gap-6 p-2">
-            <div id="mood-container" className="flex flex-wrap gap-2 justify-center">
+            <div
+              id="mood-container"
+              className="flex flex-wrap gap-2 justify-center"
+            >
               {moodEls}
             </div>
             <textarea
