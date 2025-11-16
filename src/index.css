@@ -1,0 +1,8 @@
+@import url("https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400..700;1,400..700&family=Calistoga&family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900");
+
+@import 'tailwindcss';
+
+@theme {
+    --font-Cabin: "Cabin", sains-serif;
+    --font-Calistoga: "Calistoga", sains-serif;
+}
