@@ -2,11 +2,15 @@ import { useState } from "react";
 
 const filters = ["Today", "Week", "Month", "All"];
 
-function PostFilters({ updateFilter }) {
+type PostFiltersType = {
+  updateFilter: (val: string) => void
+}
+
+function PostFilters({ updateFilter }: PostFiltersType) {
   const [filterState, setFilterState] = useState<undefined | string>(undefined);
   return (
     <section className="flex flex-wrap gap-2">
-      {filters.map((filter) => {
+      {filters.map((filter: string) => {
         const isActive = filterState === filter;
 
         return (
