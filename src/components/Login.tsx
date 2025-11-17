@@ -140,7 +140,7 @@ export default function LogIn() {
   return (
     <>
       <section
-        className="h-screen"
+        className="w-[90%] sm:w-[60%] md:w-1/2 h-screen"
       >
         <div
           className="
