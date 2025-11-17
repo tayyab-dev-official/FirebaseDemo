@@ -20,7 +20,7 @@ import {
   addDoc,
   updateDoc,
   deleteDoc,
-  deleteField,
+  // deleteField,
   // setDoc
   getDocs,
   collection,
