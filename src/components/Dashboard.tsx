@@ -61,7 +61,7 @@ export default function Dashboard() {
           }
         }}
         aria-pressed={isActive}
-        className={`grow shrink-0 basis-1/8 flex flex-col justify-center items-center gap-2 p-2 transition-all duration-1000 ease-in-out rounded-lg ${
+        className={`flex flex-col justify-center items-center gap-2 p-2 transition-all duration-1000 ease-in-out rounded-lg ${
           isActive
             ? "scale-110 ring-4 ring-blue-400 opacity-100"
             : "hover:scale-105 hover:opacity-100 opacity-70"
@@ -106,7 +106,7 @@ export default function Dashboard() {
       <div
         id={post.id}
         key={post.id}
-        className="relative w-full flex flex-wrap p-2 m-b-4 rounded-md shadow-lg bg-orange-200"
+        className="relative w-full min-h-[180px] flex flex-wrap p-2 m-b-4 rounded-md shadow-lg bg-orange-200"
       >
         <div className="w-full flex items-center justify-between -mb-6">
           <h3 id="post-timestamp" className="text-xl font-Cabin font-bold -mt-6">
@@ -433,7 +433,7 @@ export default function Dashboard() {
       {updateProfile ? (
         <Profile />
       ) : (
-        <div className="w-full min-w-[350px] sm:max-w-[700px] p-2 flex flex-col justify-center">
+        <div className="w-full min-w-[390px] sm:max-w-[700px] p-2 flex flex-col justify-center">
           <h2 className="text-xl font-semibold p-2">
             Welcome {user ? user.displayName : "User"}
           </h2>

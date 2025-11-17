@@ -139,13 +139,16 @@ export default function LogIn() {
 
   return (
     <>
-      <section>
+      <section
+        className="h-screen"
+      >
         <div
           className="
           flex flex-col gap-4 
-          p-2
+          p-2 justify-center
           font-Cabin 
           w-full max-w-md
+          h-3/4
           "
         >
           <button
