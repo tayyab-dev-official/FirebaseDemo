@@ -6,6 +6,8 @@ import { auth, provider } from "./firebase";
 import LogIn from "./components/Login";
 import Dashboard from "./components/Dashboard";
 
+import logo from "../src/assets/favicon.png";
+
 export type AppContextType = {
   auth: Auth;
   user: User | null;
@@ -39,12 +41,16 @@ export default function App() {
           flex flex-col justify-center items-center gap-4
         "
       >
-        <h1 className="relative left-2 top-2 text-5xl font-Calistoga flex flex-col items-center">
-          <span className="text-orange-400">Delfo</span>
+        <div
+          className="flex flex-col items-center"
+        >
+          <h1 className="text-5xl font-Calistoga">
+            <span className="text-orange-400">Delfo</span>
+          </h1>
           <div className="w-20 h-20">
-            <img src="/src/assets/favicon.png" className="w-full h-full" />
+            <img src={logo} className="w-full h-full" />
           </div>
-        </h1>
+        </div>
 
         <AppContext.Provider
           value={{
