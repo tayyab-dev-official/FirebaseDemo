@@ -447,7 +447,7 @@ export default function Dashboard() {
             <textarea
               name="post-area"
               id="post-area"
-              placeholder="Write down how you're feeling..."
+              placeholder="Write down shopping list..."
               maxLength={500}
               autoFocus
               className="w-full p-4 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-1 focus:ring-blue-300"
