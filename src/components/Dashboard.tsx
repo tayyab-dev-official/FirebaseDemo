@@ -333,15 +333,15 @@ export default function Dashboard() {
     
   }, [postFilter, user?.uid]);
 
-  // Scroll textarea into view on mount
-  useEffect(() => {
-    const postArea = document.querySelector(
-      "#post-area"
-    ) as HTMLTextAreaElement;
-    if (postArea) {
-      postArea.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-  }, []);
+  // // Scroll textarea into view on mount
+  // useEffect(() => {
+  //   const postArea = document.querySelector(
+  //     "#post-area"
+  //   ) as HTMLTextAreaElement;
+  //   if (postArea) {
+  //     postArea.scrollIntoView({ behavior: "smooth", block: "center" });
+  //   }
+  // }, []);
 
   return (
     <>
