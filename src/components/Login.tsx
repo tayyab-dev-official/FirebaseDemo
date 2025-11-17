@@ -147,7 +147,7 @@ export default function LogIn() {
           flex flex-col gap-4 
           p-2 justify-center
           font-Cabin 
-          w-full max-w-md
+          w-full
           h-3/4
           "
         >
