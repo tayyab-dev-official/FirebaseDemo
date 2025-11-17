@@ -61,7 +61,7 @@ export default function Dashboard() {
           }
         }}
         aria-pressed={isActive}
-        className={`flex flex-col justify-center items-center gap-2 p-2 transition-all duration-1000 ease-in-out rounded-lg ${
+        className={`grow shrink-0 basis-1/8 flex flex-col justify-center items-center gap-2 p-2 transition-all duration-1000 ease-in-out rounded-lg ${
           isActive
             ? "scale-110 ring-4 ring-blue-400 opacity-100"
             : "hover:scale-105 hover:opacity-100 opacity-70"
@@ -70,7 +70,7 @@ export default function Dashboard() {
         <img
           src={imageUrl}
           alt={name}
-          className="w-16 h-16 rounded-full object-cover object-center"
+          className="w-12 h-12 rounded-full object-cover object-center"
         />
         <div className="text-center">
           <div className="font-bold text-sm">{name}</div>
@@ -124,7 +124,7 @@ export default function Dashboard() {
           )}
         </div>
 
-        <div className="flex items-center mb-4">
+        {/* <div className="flex items-center mb-4">
           <div className="w-10 h-10 mr-2">
             {post.userPhotoURL !== "" ? (
               <img
@@ -141,7 +141,7 @@ export default function Dashboard() {
           <span className="font-bold text-lg text-amber-900">
             {post.userName}
           </span>
-        </div>
+        </div> */}
 
         <div id="post-body" className="w-full text-xl whitespace-pre-wrap">
           {post.body.split(/\r\n|\n/g).map((line, index) => {
@@ -176,14 +176,14 @@ export default function Dashboard() {
 
         <button
           onClick={() => updatePost(post)}
-          className="mx-auto bg-orange-600 mt-4 px-6 py-2 rounded-lg font-bold absolute right-25 bottom-4 text-white"
+          className="mx-auto bg-orange-600 mt-4 px-6 py-2 rounded-lg font-bold absolute right-25 bottom-2 text-white"
         >
           Edit
         </button>
 
         <button
           onClick={() => deletePost(post)}
-          className="mx-auto bg-orange-600 mt-4 px-4 py-2 rounded-lg font-bold absolute right-2 bottom-4 text-white"
+          className="mx-auto bg-orange-600 mt-4 px-4 py-2 rounded-lg font-bold absolute right-2 bottom-2 text-white"
         >
           Delete
         </button>
