@@ -3,8 +3,8 @@ import { useState } from "react";
 const filters = ["Today", "Week", "Month", "All"];
 
 type PostFiltersType = {
-  updateFilter: (val: string) => void
-}
+  updateFilter: (val: string) => void;
+};
 
 function PostFilters({ updateFilter }: PostFiltersType) {
   const [filterState, setFilterState] = useState<undefined | string>(undefined);

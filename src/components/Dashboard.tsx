@@ -44,7 +44,7 @@ export default function Dashboard() {
   const [postFilter, setPostFilter] = useState<undefined | string>(undefined)
   
   const { auth, user, setUser, updateProfile, setUpdateProfile } = useAuth();
-  const photoURL = user?.photoURL || "";
+  const photoURL = user?.photoURL || ""
 
   const moodEls = moods.map((mood) => {
     const { id, emoji, moodText } = mood;
@@ -98,14 +98,25 @@ export default function Dashboard() {
       <div
         id={post.id}
         key={post.id}
-        className="w-full flex flex-wrap p-2 m-b-4 bg-orange-200 rounded-md"
+        className="w-full flex flex-wrap p-2 m-b-4 rounded-md shadow-lg bg-orange-200"
       >
-        <div className="flex items-center">
+        <div className="w-full flex items-center justify-between">
+          <h3 id="post-timestamp" className="text-xl font-Cabin font-bold">
+            {postDate}
+          </h3>
+          {typeof foundMood === "object" && (
+            <span className="text-3xl ml-auto">{foundMood.emoji}</span>
+          )}
+        </div>
+
+        <div className="flex items-center mb-4">
           <div className="w-10 h-10 mr-2">
-            {post.userPhotoURL ? (
+            {post.userPhotoURL !== '' ? (
               <img
                 src={post.userPhotoURL}
-                alt="user profile photo"
+                referrerPolicy="no-referrer"
+                crossOrigin="anonymous"
+                alt="profile picture"
                 className="w-full h-full rounded-full"
               />
             ) : (
@@ -116,24 +127,14 @@ export default function Dashboard() {
             {post.userName}
           </span>
         </div>
-        <div className="w-full flex items-center justify-between">
-          <h3 id="post-timestamp" className="text-xl font-Cabin font-bold">
-            {postDate}
-          </h3>
-          {typeof foundMood === "object" && (
-            <span className="text-3xl ml-auto">{foundMood.emoji}</span>
-          )}
-        </div>
-        <div id="post-body" className="w-full text-xl flex flex-wrap">
+
+        <div id="post-body" className="w-full text-xl whitespace-pre-wrap">
           {post.body.split(/\r\n|\n/g).map((line, index) => {
             const urlRegex = /(https?:\/\/[^\s]+)/g;
             const parts = line.split(urlRegex);
 
             return (
-              <p 
-                key={index}
-                
-                >
+              <div key={index} className="w-full">
                 {line ? (
                   parts.map((part, partIndex) =>
                     urlRegex.test(part) ? (
@@ -153,7 +154,7 @@ export default function Dashboard() {
                 ) : (
                   <br />
                 )}
-              </p>
+              </div>
             );
           })}
         </div>
