@@ -140,7 +140,7 @@ export default function LogIn() {
   return (
     <>
       <section
-        className="w-[90%] sm:w-[60%] md:w-1/2 h-screen"
+        className="w-[90%] sm:w-[60%] md:w-1/2 mt-22"
       >
         <div
           className="
@@ -148,7 +148,6 @@ export default function LogIn() {
           p-2 justify-center
           font-Cabin 
           w-full
-          h-3/4
           "
         >
           <button
