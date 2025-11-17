@@ -5,15 +5,10 @@ import { useAuth } from "../hooks/useAuth";
 import { FaUserCircle } from "react-icons/fa";
 import { useState, useEffect } from "react";
 
-import { moods } from "../moods";
-import PostFilters from './PostFilters'
+import { delFolks } from "../moods";
+import PostFilters from "./PostFilters";
 
-import { 
-  startOfDay,
-  endOfDay,
-  startOfWeek,
-  startOfMonth
-} from 'date-fns'
+import { startOfDay, endOfDay, startOfWeek, startOfMonth } from "date-fns";
 
 import {
   doc,
@@ -44,15 +39,15 @@ type Post = {
 };
 
 export default function Dashboard() {
-  const [moodState, setMoodState] = useState<string | undefined>(undefined)
-  const [posts, setPosts] = useState<Post[]>([])
-  const [postFilter, setPostFilter] = useState<undefined | string>(undefined)
-  
-  const { auth, user, setUser, updateProfile, setUpdateProfile } = useAuth();
-  const photoURL = user?.photoURL || ""
+  const [moodState, setMoodState] = useState<string | undefined>(undefined);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [postFilter, setPostFilter] = useState<undefined | string>(undefined);
 
-  const moodEls = moods.map((mood) => {
-    const { id, emoji, moodText } = mood;
+  const { auth, user, setUser, updateProfile, setUpdateProfile } = useAuth();
+  const photoURL = user?.photoURL || "";
+
+  const delfolksEl = delFolks.map((folk) => {
+    const { id, name, imageUrl, moodText } = folk;
     const isActive = moodState === id;
     return (
       <button
@@ -66,21 +61,29 @@ export default function Dashboard() {
           }
         }}
         aria-pressed={isActive}
-        className={`flex flex-col justify-center gap-4 p-2 transition-all duration-1000 ease-in-out ${
+        className={`flex flex-col justify-center items-center gap-2 p-2 transition-all duration-1000 ease-in-out rounded-lg ${
           isActive
-            ? "scale-125 bg-blue-300 opacity-100 rounded-md"
-            : "hover:scale-125  hover:opacity-100 opacity-70"
+            ? "scale-110 ring-4 ring-blue-400 opacity-100"
+            : "hover:scale-105 hover:opacity-100 opacity-70"
         }`}
       >
-        <span className="text-4xl">{emoji}</span>
-        {moodText}
+        <img
+          src={imageUrl}
+          alt={name}
+          className="w-16 h-16 rounded-full object-cover object-center"
+        />
+        <div className="text-center">
+          <div className="font-bold text-sm">{name}</div>
+          <div className="text-xs text-gray-600">
+            {moodText.split(" - ")[1]}
+          </div>
+        </div>
       </button>
     );
   });
 
   const postsEl = posts.map((post) => {
-    const foundMood =
-      moods.find((storedMood) => storedMood.id === post.mood) || "😁";
+    const foundMood = delFolks.find((folk) => folk.id === post.mood);
     const options: Intl.DateTimeFormatOptions = {
       year: "numeric",
       month: "short",
@@ -105,18 +108,25 @@ export default function Dashboard() {
         key={post.id}
         className="relative w-full flex flex-wrap p-2 m-b-4 rounded-md shadow-lg bg-orange-200"
       >
-        <div className="w-full flex items-center justify-between">
-          <h3 id="post-timestamp" className="text-xl font-Cabin font-bold">
+        <div className="w-full flex items-center justify-between -mb-6">
+          <h3 id="post-timestamp" className="text-xl font-Cabin font-bold -mt-6">
             {postDate}
           </h3>
-          {typeof foundMood === "object" && (
-            <span className="text-3xl ml-auto">{foundMood.emoji}</span>
+          {foundMood && (
+            <div className="flex flex-col items-center gap-2 mt-2 mr-2">
+              <img
+                src={foundMood.imageUrl}
+                alt={foundMood.name}
+                className="w-14 h-14 rounded-full object-cover object-center"
+              />
+              <span className="font-bold text-sm">{foundMood.name}</span>
+            </div>
           )}
         </div>
 
-        <div className="flex items-center mb-4 mt-2">
+        <div className="flex items-center mb-4">
           <div className="w-10 h-10 mr-2">
-            {post.userPhotoURL !== '' ? (
+            {post.userPhotoURL !== "" ? (
               <img
                 src={post.userPhotoURL}
                 referrerPolicy="no-referrer"
@@ -166,21 +176,25 @@ export default function Dashboard() {
 
         <button
           onClick={() => updatePost(post)}
-          className="mx-auto bg-orange-600 mt-4 px-6 py-2 rounded-lg font-bold absolute right-25 top-10 text-white"
-        >Edit</button>
+          className="mx-auto bg-orange-600 mt-4 px-6 py-2 rounded-lg font-bold absolute right-25 bottom-4 text-white"
+        >
+          Edit
+        </button>
 
         <button
           onClick={() => deletePost(post)}
-          className="mx-auto bg-orange-600 mt-4 px-4 py-2 rounded-lg font-bold absolute right-2 top-10 text-white"
-        >Delete</button>
+          className="mx-auto bg-orange-600 mt-4 px-4 py-2 rounded-lg font-bold absolute right-2 bottom-4 text-white"
+        >
+          Delete
+        </button>
       </div>
     );
   });
 
   async function updatePost(post: Post) {
     try {
-      const postRef = doc(db, "posts", post.id)
-      const newBody = prompt("Edit the post body.", post.body)
+      const postRef = doc(db, "posts", post.id);
+      const newBody = prompt("Edit the post body.", post.body);
       if (newBody) {
         await updateDoc(postRef, {
           body: newBody,
@@ -203,8 +217,7 @@ export default function Dashboard() {
       // await updateDoc(postRef, {
       //   body: deleteField(),
       // });
-    } 
-    catch (error) {
+    } catch (error) {
       console.error("Error deleting post:", error);
     }
   }
@@ -230,7 +243,7 @@ export default function Dashboard() {
           };
 
           if (!post.mood && moodWarningEl) {
-            moodWarningEl.textContent = "Mood selection is mandatory.";
+            moodWarningEl.textContent = "Delivery Folk selection is mandatory.";
           }
 
           // publishing post to the firebase
@@ -309,15 +322,15 @@ export default function Dashboard() {
     const postsRef = collection(db, "posts");
     const isUserLoggedIn = where("uid", "==", user.uid);
     const filter = postFilter?.toLowerCase();
-    
+
     let activeQuery;
     if (filter === "today") {
-      const today = new Date()
-      const dayStart = startOfDay(today)
-      const dayEnd = endOfDay(today)
+      const today = new Date();
+      const dayStart = startOfDay(today);
+      const dayEnd = endOfDay(today);
       const isStartOfTheDay = where("createdAt", ">=", dayStart);
       const isEndOfTheDay = where("createdAt", "<=", dayEnd);
-      
+
       activeQuery = query(
         postsRef,
         isUserLoggedIn,
@@ -325,8 +338,7 @@ export default function Dashboard() {
         isEndOfTheDay,
         orderBy("createdAt", "desc")
       );
-    } 
-    else if (filter === "week") {
+    } else if (filter === "week") {
       const today = new Date();
 
       const lastMonday = startOfWeek(today, { weekStartsOn: 1 });
@@ -377,7 +389,6 @@ export default function Dashboard() {
     });
 
     return () => unsubscribe();
-    
   }, [postFilter, user?.uid]);
 
   // // Scroll textarea into view on mount
@@ -431,7 +442,7 @@ export default function Dashboard() {
               id="mood-container"
               className="flex flex-wrap gap-2 justify-center"
             >
-              {moodEls}
+              {delfolksEl}
             </div>
             <textarea
               name="post-area"
@@ -463,7 +474,7 @@ export default function Dashboard() {
                   Fetch posts
                 </button> */}
             </div>
-            <PostFilters updateFilter={setPostFilter}/>
+            <PostFilters updateFilter={setPostFilter} />
             <div
               id="posts-container"
               className="flex flex-wrap items-center justify-between gap-4"
