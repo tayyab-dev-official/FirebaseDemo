@@ -140,7 +140,7 @@ export default function LogIn() {
   return (
     <>
       <section
-        className="w-[90%] sm:w-[60%] md:w-1/2 mt-22"
+        className="w-full my-22"
       >
         <div
           className="
