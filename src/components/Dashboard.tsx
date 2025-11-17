@@ -16,15 +16,20 @@ import {
 } from 'date-fns'
 
 import {
-  collection,
+  doc,
   addDoc,
+  updateDoc,
+  deleteDoc,
+  deleteField,
+  // setDoc
+  getDocs,
+  collection,
   serverTimestamp,
   Timestamp,
   onSnapshot,
   query,
   where,
   orderBy,
-  getDocs
 } from "firebase/firestore";
 import { db } from "../firebase";
 
@@ -98,7 +103,7 @@ export default function Dashboard() {
       <div
         id={post.id}
         key={post.id}
-        className="w-full flex flex-wrap p-2 m-b-4 rounded-md shadow-lg bg-orange-200"
+        className="relative w-full flex flex-wrap p-2 m-b-4 rounded-md shadow-lg bg-orange-200"
       >
         <div className="w-full flex items-center justify-between">
           <h3 id="post-timestamp" className="text-xl font-Cabin font-bold">
@@ -109,7 +114,7 @@ export default function Dashboard() {
           )}
         </div>
 
-        <div className="flex items-center mb-4">
+        <div className="flex items-center mb-4 mt-2">
           <div className="w-10 h-10 mr-2">
             {post.userPhotoURL !== '' ? (
               <img
@@ -158,9 +163,51 @@ export default function Dashboard() {
             );
           })}
         </div>
+
+        <button
+          onClick={() => updatePost(post)}
+          className="mx-auto bg-orange-600 mt-4 px-6 py-2 rounded-lg font-bold absolute right-25 top-10 text-white"
+        >Edit</button>
+
+        <button
+          onClick={() => deletePost(post)}
+          className="mx-auto bg-orange-600 mt-4 px-4 py-2 rounded-lg font-bold absolute right-2 top-10 text-white"
+        >Delete</button>
       </div>
     );
   });
+
+  async function updatePost(post: Post) {
+    try {
+      const postRef = doc(db, "posts", post.id)
+      const newBody = prompt("Edit the post body.", post.body)
+      if (newBody) {
+        await updateDoc(postRef, {
+          body: newBody,
+        });
+
+        // Create or update existing document.
+        // setDoc(postRef, { body: newBody }, { merge: true})
+      }
+    } catch (error) {
+      console.error("Error updating post:", error);
+    }
+  }
+
+  async function deletePost(post: Post) {
+    try {
+      const postRef = doc(db, "posts", post.id);
+      await deleteDoc(postRef);
+
+      // Delete field of an existing document.
+      // await updateDoc(postRef, {
+      //   body: deleteField(),
+      // });
+    } 
+    catch (error) {
+      console.error("Error deleting post:", error);
+    }
+  }
 
   async function handleClick(event: React.MouseEvent) {
     const { id } = event.currentTarget;
@@ -406,7 +453,7 @@ export default function Dashboard() {
                 onClick={handleClick}
                 className="bg-blue-600 py-2 rounded-lg font-bold text-white text-xl"
               >
-                Post
+                Order
               </button>
               {/* <button
                   id="btn-fetch-posts"
@@ -421,7 +468,7 @@ export default function Dashboard() {
               id="posts-container"
               className="flex flex-wrap items-center justify-between gap-4"
             >
-              {posts.length > 0 ? postsEl : "No posts Yet!"}
+              {posts.length > 0 ? postsEl : "No orders Yet!"}
             </div>
           </section>
         </div>

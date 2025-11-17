@@ -27,6 +27,14 @@ service cloud.firestore {
         allow read: if isUserLoggedIn() && isUserAuthorOfPost();
     }
 
+    // All posts of logged-in user only
+    match /{document=**} {
+        allow create: if isUserLoggedIn();
+        allow update: if isUserLoggedIn() && isUserAuthorOfPost();
+        allow read: if isUserLoggedIn() && isUserAuthorOfPost();
+        allow delete: if isUserLoggedIn() && isUserAuthorOfPost();
+    }
+
     // Allow only authenticated content owners access
     match /some_collection/{userId}/{document} {
       allow read, write: if request.auth != null && request.auth.uid == userId

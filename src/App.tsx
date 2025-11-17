@@ -23,7 +23,6 @@ export default function App() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      
       setUser(firebaseUser)
       if (firebaseUser) await firebaseUser.reload()
     });
@@ -36,11 +35,16 @@ export default function App() {
         className="
           w-full           
           sm:mx-auto
-          mt-[2%]
+          mt-[2%] sm:mt-[1%]
           flex flex-col justify-center items-center gap-4
         "
       >
-        <h1 className="text-5xl font-Calistoga">Moody</h1>
+        <h1 className="relative left-2 top-2 text-5xl font-Calistoga flex flex-col items-center">
+          <span className="text-orange-400">Delfo</span>
+          <div className="w-[80px] h-[80px]">
+            <img src="/src/assets/favicon.png" className="w-full h-full" />
+          </div>
+        </h1>
 
         <AppContext.Provider
           value={{

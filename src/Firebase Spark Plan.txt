@@ -1,0 +1,22 @@
+Yes, both Firebase Authentication (with email/password and Google sign-in) and Cloud Firestore are available as free services under the Firebase Spark plan, subject to generous usage limits. 
+
+Firebase Authentication
+Email/Password and Google Sign-in: These are considered part of the "no-cost" Firebase products and are largely free to use, even in production, up to a significant threshold of 50,000 Monthly Active Users (MAUs).
+
+Paid features: The primary exception is Phone Authentication (SMS verification), which costs money per verification from the first use (though there may be a small daily or monthly free testing quota).
+
+Exceeding Limits: If your app exceeds 50,000 MAUs, your project automatically transitions to the Google Cloud Identity Platform's pay-as-you-go pricing, but the first 50,000 MAUs are still free.
+
+Firebase Cloud Firestore 
+Free Quotas: Cloud Firestore has a free quota of usage on both the free Spark plan and the paid Blaze plan. As long as you stay within these limits, it is a free service.
+
+Key Free Limits (per project):
+Stored data: 1 GiB total.
+Document reads: 50,000 per day.
+Document writes: 20,000 per day.
+Document deletes: 20,000 per day.
+Outbound network traffic: 10 GiB per month.
+
+Exceeding Limits: If you exceed the limits on the free Spark plan, the service will be disabled for the remainder of the month unless you upgrade to the pay-as-you-go Blaze plan. On the Blaze plan, you are simply billed for usage above the free quotas. 
+
+For detailed information on all of the services and their specific limits, you can refer to the official Firebase pricing page.
