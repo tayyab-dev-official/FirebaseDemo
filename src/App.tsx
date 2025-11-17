@@ -41,7 +41,7 @@ export default function App() {
       >
         <h1 className="relative left-2 top-2 text-5xl font-Calistoga flex flex-col items-center">
           <span className="text-orange-400">Delfo</span>
-          <div className="w-[80px] h-[80px]">
+          <div className="w-20 h-20">
             <img src="/src/assets/favicon.png" className="w-full h-full" />
           </div>
         </h1>
