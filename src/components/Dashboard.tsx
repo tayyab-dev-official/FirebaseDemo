@@ -106,10 +106,10 @@ export default function Dashboard() {
       <div
         id={post.id}
         key={post.id}
-        className="relative w-full min-h-[180px] flex flex-wrap p-2 m-b-4 rounded-md shadow-lg bg-orange-200"
+        className="relative w-full min-h-[180px] flex flex-wrap p-2 rounded-md shadow-lg bg-orange-200"
       >
-        <div className="w-full flex items-center justify-between -mb-6">
-          <h3 id="post-timestamp" className="text-xl font-Cabin font-bold -mt-6">
+        <div className="w-full flex items-center justify-between -mb-12">
+          <h3 id="post-timestamp" className="text-xl font-Cabin font-bold -mt-12">
             {postDate}
           </h3>
           {foundMood && (
