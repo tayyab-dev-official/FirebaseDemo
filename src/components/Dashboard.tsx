@@ -108,7 +108,7 @@ export default function Dashboard() {
         key={post.id}
         className="relative w-full min-h-[180px] flex flex-wrap p-2 rounded-md shadow-lg bg-orange-200"
       >
-        <div className="w-full flex items-center justify-between -mb-12">
+        <div className="w-full flex items-center justify-between">
           <h3 id="post-timestamp" className="text-xl font-Cabin font-bold -mt-12">
             {postDate}
           </h3>
@@ -176,14 +176,14 @@ export default function Dashboard() {
 
         <button
           onClick={() => updatePost(post)}
-          className="mx-auto bg-orange-600 mt-4 px-6 py-2 rounded-lg font-bold absolute right-25 bottom-2 text-white"
+          className="mx-auto bg-orange-600 mt-4 px-6 py-2 rounded-lg font-bold absolute left-2 top-10 text-white"
         >
           Edit
         </button>
 
         <button
           onClick={() => deletePost(post)}
-          className="mx-auto bg-orange-600 mt-4 px-4 py-2 rounded-lg font-bold absolute right-2 bottom-2 text-white"
+          className="mx-auto bg-orange-600 mt-4 px-4 py-2 rounded-lg font-bold absolute left-25 top-10 text-white"
         >
           Delete
         </button>
