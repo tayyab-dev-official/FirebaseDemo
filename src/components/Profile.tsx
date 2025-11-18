@@ -1,42 +1,24 @@
-import {
-    updateProfile
-} from 'firebase/auth'
-import type { AuthError } from "firebase/auth"
-
-import { useAuth } from '../hooks/useAuth'
+import { useAppContext } from '../hooks/useAppContext'
+import { useFirebaseAuthentication } from '../hooks/useFirebaseAuthentication'
 
 export default function Profile() {
-    const { auth, user, setUser, setUpdateProfile } = useAuth()
+    const { auth, user, setUser, setUpdateProfile, provider } = useAppContext()
+    const { updateUserProfile } = useFirebaseAuthentication(auth, provider)
     const userName = user?.displayName
 
     async function handleClick(event: React.MouseEvent) {
         const { id }= event.currentTarget
 
         if (id === "btn-profile-update") {
-            try {
-                if (user) {
-                    const user = auth.currentUser
-                    if (user) {
-                        await updateProfile(user, {
-                          displayName: getInputValue("#input-user-name"),
-                          photoURL: getInputValue("#input-profile-picture"),
-                        })
-                        await user?.reload()
-                        setUser(user)
-                        setUpdateProfile(false)
-                    }
-                }
-                else {
-                    console.log('[Profile] User does not exist!')
-                }
-            }
-            catch (error) {
-                if (error instanceof Error) {
-                    const authError = error as AuthError
-                    console.log('[PROFILE] unable to update profile!')
-                    console.error(authError.code)
-                    console.error(authError.message)
-                }
+            const displayName = getInputValue("#input-user-name")
+            const photoURL = getInputValue("#input-profile-picture")
+            
+            const currentUser = auth.currentUser
+            const updatedUser = await updateUserProfile(currentUser, displayName, photoURL)
+            
+            if (updatedUser) {
+                setUser(updatedUser)
+                setUpdateProfile(false)
             }
         }
     }

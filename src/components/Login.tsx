@@ -1,16 +1,10 @@
 import { FcGoogle } from "react-icons/fc"
-
-import {
-  createUserWithEmailAndPassword,
-  updateProfile,
-  signInWithEmailAndPassword,
-  signInWithPopup
-} from "firebase/auth"
-import type { AuthError } from "firebase/auth"
-import { useAuth } from "../hooks/useAuth";
+import { useAppContext } from "../hooks/useAppContext"
+import { useFirebaseAuthentication } from "../hooks/useFirebaseAuthentication"
 
 export default function LogIn() {
-  const { auth, setUser, provider } = useAuth()
+  const { auth, setUser, provider } = useAppContext()
+  const { signUp: hookSignUp, signIn: hookSignIn, signInWithGoogle: hookSignInWithGoogle } = useFirebaseAuthentication(auth, provider)
 
   function handleClick(event: React.MouseEvent<HTMLButtonElement>) {
     const { id } = event.currentTarget
@@ -68,80 +62,37 @@ export default function LogIn() {
   async function signUp() {
     const email = getEmail()
     const password = getPassword()
+    const displayName = getUserName()
+
+    const user = await hookSignUp(email, password, displayName)
     
-    try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      )
-      const user = userCredential.user
-
-      await updateProfile(user, {
-        displayName: getUserName(),
-      });
-
-      // refresh and set user in context
-      await user.reload()
+    if (user) {
       setUser({ ...user })
-    }
-    catch (error) {
-      if (error instanceof Error) {
-        const { code, message } = error as AuthError
-        console.error(code)
-        console.error(message)
-      }
     }
   }
 
   async function signIn() {
-    const email = getEmail();
-    const password = getPassword();
+    const email = getEmail()
+    const password = getPassword()
 
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user
+    const user = await hookSignIn(email, password)
+    
+    if (user) {
       setUser({ ...user })
-    } catch (error) {
-      if (error instanceof Error) {
-        const { code, message } = error as AuthError;
-        console.error(code);
-        console.error(message);
-      }
     }
   }
 
   async function signInWithGoogle() {
-    try {
-      const result = await signInWithPopup(auth, provider)
-      // const credential = GoogleAuthProvider.credentialFromResult(result)
-      // const token = credential?.accessToken
-      const user = result.user
-      // set user in context
+    const user = await hookSignInWithGoogle()
+    
+    if (user) {
       setUser({ ...user })
-      // console.log(`[LOGIN] accessToken: ${token}`)
-    }
-    catch (error) {
-      if (error instanceof Error) {
-        const authError = error as AuthError
-        const errorCode = authError.code
-        const errorMessage = authError.message
-  
-        // const email = authError.customData.email
-        // const credential = GoogleAuthProvider.credentialFromError(authError)
-        console.error(errorCode)
-        console.error(errorMessage)
-        // console.error(email)
-        // console.error(credential)
-      }
     }
   }
 
   return (
     <>
-      <section
-        className="w-full max-w-[400px] mx-auto my-22"
-      >
+      <section className="w-full max-w-[400px] mx-auto my-22">
         <div
           className="
           flex flex-col gap-4 
@@ -155,9 +106,9 @@ export default function LogIn() {
             onClick={handleClick}
             className="
             flex flex-wrap items-center justify-center gap-2
-            py-2
+            py-4
             rounded-lg
-            text-xl
+            text-2xl
             shadow-md/50
             "
           >
@@ -170,9 +121,9 @@ export default function LogIn() {
             type="text"
             placeholder="Username"
             className="
-            px-8 py-2 
+            px-8 py-4 
             rounded-md
-            text-xl text-center
+            text-2xl text-center
             border-2
             "
           />
@@ -182,9 +133,9 @@ export default function LogIn() {
             type="email"
             placeholder="Email"
             className="
-            px-8 py-2 
+            px-8 py-4 
             rounded-md
-            text-xl text-center
+            text-2xl text-center
             border-2
             "
           />
@@ -195,9 +146,9 @@ export default function LogIn() {
             placeholder="Password"
             autoComplete="new-password"
             className="
-            px-8 py-2 
+            px-8 py-4 
             rounded-md
-            text-xl text-center
+            text-2xl text-center
             border-2
             "
           />
@@ -206,9 +157,9 @@ export default function LogIn() {
             onClick={handleClick}
             className="
             shadow-md/50
-            px-8 py-2
+            px-8 py-4
             rounded-md
-            text-xl
+            text-2xl
             "
           >
             Sign in
@@ -219,9 +170,9 @@ export default function LogIn() {
             onClick={handleClick}
             className="
             shadow-md/50
-            px-8 py-2
+            px-8 py-4
             rounded-md
-            text-xl
+            text-2xl
             "
           >
             Create Account

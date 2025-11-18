@@ -1,17 +1,18 @@
-import { useState } from "react";
+import { useAppContext } from "../hooks/useAppContext";
 
 const filters = ["Today", "Week", "Month", "All"];
 
-type PostFiltersType = {
-  updateFilter: (val: string) => void;
-};
+function PostFilters() {
+  const { postFilter, setPostFilter } = useAppContext();
 
-function PostFilters({ updateFilter }: PostFiltersType) {
-  const [filterState, setFilterState] = useState<undefined | string>(undefined);
+  const handleFilterClick = (filter: string) => {
+    setPostFilter(filter);
+  };
+
   return (
     <section className="flex flex-wrap gap-2">
       {filters.map((filter: string) => {
-        const isActive = filterState === filter;
+        const isActive = postFilter === filter;
 
         return (
           <button
@@ -20,10 +21,7 @@ function PostFilters({ updateFilter }: PostFiltersType) {
             className={`p-2 rounded-lg grow shrink font-bold text-lg ${
               isActive ? "bg-black text-white" : "bg-gray-400"
             }`}
-            onClick={() => {
-              setFilterState(filter);
-              updateFilter(filter);
-            }}
+            onClick={() => handleFilterClick(filter)}
           >
             {filter}
           </button>

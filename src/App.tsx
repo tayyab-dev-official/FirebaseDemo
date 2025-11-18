@@ -1,35 +1,63 @@
-import { useState, useEffect, createContext } from "react";
+import { useEffect, createContext } from "react";
 import { onAuthStateChanged, type GoogleAuthProvider } from "firebase/auth";
 import type { Auth, User } from "firebase/auth";
+import { Timestamp } from "firebase/firestore";
 
 import { auth, provider } from "./firebase";
 import LogIn from "./components/Login";
 import Dashboard from "./components/Dashboard";
+import Header from "./components/Header";
+import Profile from "./components/Profile";
+import { useAppStateProvider } from "./hooks/useAppState";
+import { useFirebaseAuthentication } from "./hooks/useFirebaseAuthentication";
 
-import logo from "../src/assets/favicon.png";
+export type Post = {
+  userName: string;
+  userPhotoURL: string;
+  id: string;
+  createdAt: Timestamp;
+  mood: string | undefined;
+  uid: string;
+  body: string;
+};
 
 export type AppContextType = {
   auth: Auth;
+  provider: GoogleAuthProvider;
   user: User | null;
   setUser: (value: User | null) => void;
-  provider: GoogleAuthProvider;
   updateProfile: boolean;
   setUpdateProfile: (value: boolean) => void;
+  moodState: string | undefined;
+  setMoodState: (value: string | undefined) => void;
+  posts: Post[];
+  setPosts: (value: Post[]) => void;
+  postFilter: string | undefined;
+  setPostFilter: (value: string | undefined) => void;
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export default function App() {
-  const [user, setUser] = useState<User | null>(null);
-  const [updateProfile, setUpdateProfile] = useState<boolean>(false);
+  // All state - initialized from useAppStateProvider hook (SINGLE SOURCE OF TRUTH)
+  const appState = useAppStateProvider();
+  const { logOut } = useFirebaseAuthentication(auth, provider);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      setUser(firebaseUser)
-      if (firebaseUser) await firebaseUser.reload()
+      appState.setUser(firebaseUser);
+      if (firebaseUser) await firebaseUser.reload();
     });
-    return () => unsubscribe()
-  }, [])
+    return () => unsubscribe();
+  }, [appState]);
+
+  const contextValue: AppContextType = {
+    // Auth constants
+    auth,
+    provider,
+    // All state from hook
+    ...appState,
+  };
 
   return (
     <>
@@ -41,28 +69,28 @@ export default function App() {
           flex flex-col justify-center items-center gap-4
         "
       >
-        <div
-          className="flex flex-col items-center"
-        >
-          <h1 className="text-5xl font-Calistoga">
-            <span className="text-orange-400">Delfo</span>
-          </h1>
-          <div className="w-20 h-20">
-            <img src={logo} className="w-full h-full" />
-          </div>
-        </div>
-
-        <AppContext.Provider
-          value={{
-            auth,
-            user,
-            setUser,
-            provider,
-            updateProfile,
-            setUpdateProfile,
-          }}
-        >
-          {user ? <Dashboard /> : <LogIn />}
+        <AppContext.Provider value={contextValue}>
+          {appState.user && (
+            <Header
+              photoURL={appState.user.photoURL || ""}
+              onProfileClick={() => appState.setUpdateProfile(true)}
+              onLogoutClick={async () => {
+                const success = await logOut();
+                if (success) {
+                  appState.setUser(null);
+                }
+              }}
+            />
+          )}
+          {appState.user ? (
+            appState.updateProfile ? (
+              <Profile />
+            ) : (
+              <Dashboard />
+            )
+          ) : (
+            <LogIn />
+          )}
         </AppContext.Provider>
       </main>
     </>
