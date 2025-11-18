@@ -65,7 +65,7 @@ export default function Post({ post, onEdit, onDelete }: PostProps) {
       className="relative w-full min-h-[180px] flex flex-wrap p-2 rounded-md shadow-lg bg-orange-200"
     >
       <div className="w-full flex items-center justify-between">
-        <h3 id="post-timestamp" className="text-xl font-Cabin font-bold -mt-12">
+        <h3 id="post-timestamp" className="text-xl font-Cabin font-bold -mt-14">
           {postDate}
         </h3>
         {foundMood && (
@@ -99,7 +99,7 @@ export default function Post({ post, onEdit, onDelete }: PostProps) {
         </span>
       </div> */}
 
-      <div id="post-body" className="w-full text-xl whitespace-pre-wrap">
+      <div id="post-body" className="w-full text-xl whitespace-pre-wrap p-2 mt-2">
         {post.body.split(/\r\n|\n/g).map((line, index) => {
           const urlRegex = /(https?:\/\/[^\s]+)/g;
           const parts = line.split(urlRegex);
