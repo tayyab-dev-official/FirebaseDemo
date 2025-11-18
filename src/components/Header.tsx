@@ -1,5 +1,7 @@
 import { FaSignOutAlt, FaUserCircle } from "react-icons/fa";
 
+import logo from "/src/assets/favicon.png"
+
 interface HeaderProps {
   photoURL: string;
   onProfileClick: () => void;
@@ -23,7 +25,7 @@ export default function Header({
         </h1>
         <div className="w-20 h-20">
           <img
-            src="src/assets/favicon.png"
+            src={logo}
             className="w-full h-full"
             alt="Delfo logo"
           />

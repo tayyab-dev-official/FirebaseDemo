@@ -67,6 +67,7 @@ export default function App() {
           mx-auto
           mt-[2%] sm:mt-[1%]
           flex flex-col justify-center items-center gap-4
+          ring-2
         "
       >
         <AppContext.Provider value={contextValue}>
