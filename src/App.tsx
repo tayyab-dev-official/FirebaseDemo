@@ -64,7 +64,7 @@ export default function App() {
       <main
         className="
           w-full           
-          sm:mx-auto
+          mx-auto
           mt-[2%] sm:mt-[1%]
           flex flex-col justify-center items-center gap-4
         "
