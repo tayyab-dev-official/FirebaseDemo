@@ -63,7 +63,8 @@ export default function App() {
     <>
       <main
         className="
-          w-full           
+          w-full 
+          max-w[800px]          
           mx-auto
           mt-[2%] sm:mt-[1%]
           flex flex-col justify-center items-center gap-4
