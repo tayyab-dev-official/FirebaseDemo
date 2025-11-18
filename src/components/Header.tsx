@@ -24,16 +24,12 @@ export default function Header({
           <span className="text-orange-400">Delfo</span>
         </h1>
         <div className="w-20 h-20">
-          <img
-            src={logo}
-            className="w-full h-full"
-            alt="Delfo logo"
-          />
+          <img src={logo} className="w-full h-full" alt="Delfo logo" />
         </div>
       </div>
 
-      <nav className="sm:absolute sm:top-4 sm:right-6 flex gap-2 flex-col items-center justify-center bg-amber-100 p-2 rounded-l-md">
-        <div id="img-container" className="w-[50px] h-[50px]">
+      <nav className="sm:absolute sm:top-4 sm:right-6 flex gap-2 flex-col items-center justify-center bg-orange-300 p-2 rounded-md">
+        <div id="img-container" className="w-28 h-28">
           {photoURL ? (
             <img
               id="profile-image"
@@ -50,7 +46,7 @@ export default function Header({
         <div
           id="user-profile"
           onClick={onProfileClick}
-          className="cursor-pointer hover:text-blue-600 transition-colors"
+          className="cursor-pointer hover:text-blue-600 transition-colors shadow-lg font-bold text-md text-white bg-blue-400 px-8 py-2 rounded-md"
         >
           Profile
         </div>

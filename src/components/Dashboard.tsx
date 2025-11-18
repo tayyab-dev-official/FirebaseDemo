@@ -135,8 +135,8 @@ export default function Dashboard() {
 
   return (
     <div className="w-full min-w-[390px] sm:max-w-[700px] p-2 flex flex-col justify-center">
-      <h2 className="text-xl font-semibold p-2">
-        Welcome {user ? user.displayName : "User"}
+      <h2 className="text-2xl p-2 text-orange-600 font-Calistoga tracking-wider">
+        Welcome, {user ? user.displayName : "User"}
       </h2>
       <section className="w-full my-8 flex flex-col gap-6 p-2">
         <DeliveryFolk moodState={moodState} onMoodChange={setMoodState} />
@@ -188,17 +188,10 @@ export default function Dashboard() {
           id="posts-container"
           className="flex flex-wrap items-center justify-between gap-4"
         >
-          {posts.length > 0 ? (
-            posts.map((post) => (
-              <PostComponent
-                key={post.id}
-                post={post}
-              />
-            ))
-          ) : (
-            "No orders Yet!"
-          )}
-    </div>
+          {posts.length > 0
+            ? posts.map((post) => <PostComponent key={post.id} post={post} />)
+            : "No orders Yet!"}
+        </div>
       </section>
     </div>
   );
