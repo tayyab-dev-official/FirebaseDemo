@@ -18,7 +18,7 @@ export const delFolks = [
     name: "Amit",
     imageUrl:
       "https://media.istockphoto.com/id/1220957555/photo/indian-delivery-man-in-red-uniform-stock-photo.webp?a=1&b=1&s=612x612&w=0&k=20&c=5Qcfu9uNBRLkzGgFGSkD8SnJRqu_8n4jKd3OFC3HPVM=",
-    moodText: "Amit - Same Day",
+    moodText: "Amit - 30 to 45 minutes",
   },
   {
     id: "sneha",
