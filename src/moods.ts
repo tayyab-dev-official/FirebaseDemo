@@ -7,7 +7,7 @@ export const delFolks = [
     moodText: "Rajesh - Standard",
   },
   {
-    id: "priya",
+    id: "Supriya",
     name: "Priya",
     imageUrl:
       "https://plus.unsplash.com/premium_photo-1682088420628-fa5c3af205ba?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fGRlbGl2ZXJ5JTIwZHJpdmVyfGVufDB8fDB8fHww",
