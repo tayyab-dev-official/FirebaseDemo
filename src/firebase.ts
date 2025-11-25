@@ -1,9 +1,9 @@
+// Dependecies
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-// Read Vite env values directly so Vite can replace them at build/dev time.
-// These keys must be prefixed with `VITE_` in your `.env`.
+// Vite environment variables setup
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
