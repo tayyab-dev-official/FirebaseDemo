@@ -2,41 +2,37 @@ export const delFolks = [
   {
     id: "Fresh Chicken - 1 Kilogram",
     name: "Chicken Pieces Bone-In",
-    imageUrl:
-      "https://www.licious.in/blog/wp-content/uploads/2022/03/Chicken-Curry-Cut-min-1-750x750.png",
+    imageUrl: "/src/assets/Chicken-Curry-Cut.png",
     postText: "Fresh Chicken - 1 Kilogram - ₹300",
   },
   {
     id: "Fresh Chicken - 500 Grams",
     name: "Chicken Pieces Bone-In",
-    imageUrl:
-      "https://www.licious.in/blog/wp-content/uploads/2022/03/Chicken-Curry-Cut-min-1-750x750.png",
+    imageUrl: "/src/assets/Chicken-Curry-Cut.png",
     postText: "Fresh Chicken - 500 Grams - ₹150",
   },
   {
     id: "Fresh Chicken Boneless - 1 Kilogram",
     name: "Chicken Pieces Boneless",
-    imageUrl:
-      "https://www.licious.in/blog/wp-content/uploads/2022/03/Chicken-Curry-Cut-min-1-750x750.png",
+    imageUrl: "/src/assets/boneless-chicken.jpg",
     postText: "Fresh Chicken - 1 Kilogram - ₹300",
   },
   {
     id: "Fresh Chicken Boneless - 500 Grams",
     name: "Chicken Pieces Boneless",
-    imageUrl:
-      "https://www.licious.in/blog/wp-content/uploads/2022/03/Chicken-Curry-Cut-min-1-750x750.png",
+    imageUrl: "/src/assets/boneless-chicken.jpg",
     postText: "Fresh Chicken - 500 Grams - ₹150",
   },
   {
     id: "Fresh Chicken Keema - 1 Kilogram",
     name: "Chicken Mince (Keema)",
-    imageUrl: "chicken-pieces.jpg",
+    imageUrl: "/src/assets/chicken-keema.png",
     postText: "Fresh Chicken Keema - 1 Kilogram - ₹300",
   },
   {
     id: "Fresh Chicken Keema - 500 Grams",
     name: "Chicken Mince (Keema)",
-    imageUrl: "chicken-pieces.jpg",
+    imageUrl: "/src/assets/chicken-keema.png",
     postText: "Fresh Chicken Keema - 500 Grams - ₹150",
   },
   // {

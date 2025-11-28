@@ -29,6 +29,9 @@ export default function Post({ post, onEdit, onDelete }: PostProps) {
     deletePost: deletePostFromFirebase,
   } = useFirestore();
   const foundPost = delFolks.find((folk) => folk.id === post.itemName);
+  if (foundPost) {
+    console.log(foundPost)
+  }
 
   const options: Intl.DateTimeFormatOptions = {
     year: "numeric",

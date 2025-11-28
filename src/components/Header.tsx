@@ -28,7 +28,7 @@ export default function Header({
         </div>
       </div>
 
-      <nav className="sm:absolute sm:top-4 sm:right-6 flex gap-2 flex-col items-center justify-center bg-orange-300 p-2 rounded-md">
+      <nav className="w-1/4 max-w-[150px] min-w-[140px] mx-auto md:absolute md:top-4 md:right-6 flex gap-2 flex-col items-center justify-center bg-orange-300 p-2 rounded-md">
         <div id="img-container" className="w-28 h-28">
           {photoURL ? (
             <img
