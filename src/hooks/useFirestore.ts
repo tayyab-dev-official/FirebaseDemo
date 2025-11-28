@@ -1,5 +1,9 @@
 import { useState } from "react";
+// ------------------------------------------------------
+// Firebase Firestore Setup
+// ------------------------------------------------------
 import {
+  getFirestore,
   addDoc,
   collection,
   serverTimestamp,
@@ -11,31 +15,27 @@ import {
   type Timestamp,
 } from "firebase/firestore";
 import { type User } from "firebase/auth";
-import { db } from "../firebase";
+import { app } from "../backend/setup";
 
-export interface Post {
-  userName: string;
-  userPhotoURL: string;
-  id: string;
-  createdAt: Timestamp;
-  mood: string | undefined;
-  uid: string;
-  body: string;
-}
+export const db = getFirestore(app)
 
-/**
- * Custom hook for Firebase Firestore operations
- * Handles post creation, updates, and deletions
- */
+// ------------------------------------------------------
+// Context Types
+// ------------------------------------------------------
+import { type PostType } from '../components/Post'
+
+// ------------------------------------------------------
+// Custom Hook for Firebase Firestore
+// ------------------------------------------------------
 export function useFirestore() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [IsLoadingPost, setIsLoadingPost] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   /**
    * Publish a new post to Firestore with validation
    * @param user - Current Firebase user
    * @param postBody - The post content text
-   * @param mood - The selected delivery folk/mood
+   * @param mood - The selected delivery folk
    * @param displayName - User's display name
    * @param photoURL - User's photo URL
    * @param warningElementSelector - Optional selector for warning message element
@@ -50,7 +50,7 @@ export function useFirestore() {
     warningElementSelector?: string
   ): Promise<DocumentReference | null> {
     try {
-      setIsLoading(true);
+      setIsLoadingPost(true);
       setError(null);
       const warningEl = warningElementSelector
         ? (document.querySelector(warningElementSelector) as HTMLElement | null)
@@ -67,7 +67,7 @@ export function useFirestore() {
       if (!mood) {
         setError("Delivery Folk selection is mandatory");
         if (warningEl) {
-          warningEl.textContent = "Delivery Folk selection is mandatory.";
+          warningEl.textContent = "Category selection is mandatory.";
         }
         return null;
       }
@@ -101,7 +101,7 @@ export function useFirestore() {
       console.error("Error publishing post:", errorMessage);
       return null;
     } finally {
-      setIsLoading(false);
+      setIsLoadingPost(false);
     }
   }
 
@@ -109,15 +109,15 @@ export function useFirestore() {
    * Fetch all posts from Firestore
    * @returns Array of Post objects if successful, empty array otherwise
    */
-  async function fetchPosts(): Promise<Post[]> {
+  async function fetchPosts(): Promise<PostType[]> {
     try {
-      setIsLoading(true);
+      setIsLoadingPost(true);
       setError(null);
 
       const firebasePostsRef = await getDocs(collection(db, "posts"));
       console.log(`Fetched ${firebasePostsRef.docs.length} posts`);
 
-      const postList: Post[] = firebasePostsRef.docs.map((docSnapshot) => {
+      const postList: PostType[] = firebasePostsRef.docs.map((docSnapshot) => {
         const data = docSnapshot.data() as Record<string, unknown>;
         return {
           id: docSnapshot.id,
@@ -137,7 +137,7 @@ export function useFirestore() {
       console.error("Error fetching posts:", errorMessage);
       return [];
     } finally {
-      setIsLoading(false);
+      setIsLoadingPost(false);
     }
   }
 
@@ -149,7 +149,7 @@ export function useFirestore() {
    */
   async function updatePost(postId: string, newBody: string): Promise<boolean> {
     try {
-      setIsLoading(true);
+      setIsLoadingPost(true);
       setError(null);
 
       if (!newBody.trim()) {
@@ -168,7 +168,7 @@ export function useFirestore() {
       console.error("Error updating post:", errorMessage);
       return false;
     } finally {
-      setIsLoading(false);
+      setIsLoadingPost(false);
     }
   }
 
@@ -179,7 +179,7 @@ export function useFirestore() {
    */
   async function deletePost(postId: string): Promise<boolean> {
     try {
-      setIsLoading(true);
+      setIsLoadingPost(true);
       setError(null);
 
       const postRef = doc(db, "posts", postId);
@@ -191,7 +191,7 @@ export function useFirestore() {
       console.error("Error deleting post:", errorMessage);
       return false;
     } finally {
-      setIsLoading(false);
+      setIsLoadingPost(false);
     }
   }
 
@@ -200,8 +200,7 @@ export function useFirestore() {
     fetchPosts,
     updatePost,
     deletePost,
-    isLoading,
+    IsLoadingPost,
     error,
   };
 }
-

@@ -1,93 +1,81 @@
-import { FcGoogle } from "react-icons/fc"
-import { useAppContext } from "../hooks/useAppContext"
-import { useFirebaseAuthentication } from "../hooks/useFirebaseAuthentication"
+import { FcGoogle } from "react-icons/fc";
+// import { useFirebaseAuthentication } from "../hooks/useFirebaseAuthentication"
+import useFirebaseAuthentication from "../backend/authentication";
 
 export default function LogIn() {
-  const { auth, setUser, provider } = useAppContext()
-  const { signUp: hookSignUp, signIn: hookSignIn, signInWithGoogle: hookSignInWithGoogle } = useFirebaseAuthentication(auth, provider)
+  const { firebaseSignUp, firebaseSignIn, googleSignIn } =
+    useFirebaseAuthentication();
 
   function handleClick(event: React.MouseEvent<HTMLButtonElement>) {
-    const { id } = event.currentTarget
-    if (id === "btn-create-account") signUp()
-    else if (id === "btn-sign-in") signIn()
-    else if (id === "btn-sign-in-with-google") signInWithGoogle()
+    const { id } = event.currentTarget;
+    if (id === "btn-create-account") signUp();
+    else if (id === "btn-sign-in") signIn();
+    else if (id === "btn-sign-in-with-google") signInWithGoogle();
   }
 
   function getUserName(): string {
     const userNameEl = document.querySelector(
       "#input-user-name"
-    ) as HTMLInputElement | null
+    ) as HTMLInputElement | null;
 
     if (!userNameEl) {
-      return ''
+      return "";
     }
 
-    const userName = userNameEl.value
-    clearInputFieldValue(userNameEl)
-    return userName
+    const userName = userNameEl.value;
+    clearInputFieldValue(userNameEl);
+    return userName;
   }
 
   function getEmail(): string {
     const emailEl = document.querySelector(
       "#input-email"
-    ) as HTMLInputElement | null
+    ) as HTMLInputElement | null;
 
     if (!emailEl) {
-      return ''
+      return "";
     }
 
-    const email = emailEl.value
-    clearInputFieldValue(emailEl)
-    return email
+    const email = emailEl.value;
+    clearInputFieldValue(emailEl);
+    return email;
   }
 
   function getPassword(): string {
     const passwordEl = document.querySelector(
       "#input-password"
-    ) as HTMLInputElement | null
+    ) as HTMLInputElement | null;
 
     if (!passwordEl) {
-      return ''
+      return "";
     }
-    
-    const password = passwordEl.value
-    clearInputFieldValue(passwordEl)
-    return password
+
+    const password = passwordEl.value;
+    clearInputFieldValue(passwordEl);
+    return password;
   }
 
   function clearInputFieldValue(element: HTMLInputElement) {
-    element.value = ""
+    element.value = "";
   }
 
   async function signUp() {
-    const email = getEmail()
-    const password = getPassword()
-    const displayName = getUserName()
+    const email = getEmail();
+    const password = getPassword();
+    const displayName = getUserName();
 
-    const user = await hookSignUp(email, password, displayName)
-    
-    if (user) {
-      setUser({ ...user })
-    }
+    await firebaseSignUp(email, password, displayName);
   }
 
   async function signIn() {
-    const email = getEmail()
-    const password = getPassword()
+    const email = getEmail();
+    const password = getPassword();
 
-    const user = await hookSignIn(email, password)
-    
-    if (user) {
-      setUser({ ...user })
-    }
+    await firebaseSignIn(email, password);
   }
 
   async function signInWithGoogle() {
-    const user = await hookSignInWithGoogle()
-    
-    if (user) {
-      setUser({ ...user })
-    }
+    await googleSignIn();
   }
 
   return (
@@ -177,7 +165,6 @@ export default function LogIn() {
           >
             Create Account
           </button>
-          <button></button>
         </div>
       </section>
     </>

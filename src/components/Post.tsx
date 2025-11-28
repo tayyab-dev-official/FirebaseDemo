@@ -1,6 +1,8 @@
-import { delFolks } from "../DelFolksData";
-import type { Post as PostType } from "../App";
+import { delFolks } from "../data/DelFolksData";
 import { useFirestore } from "../hooks/useFirestore";
+import { useAppContext } from "../hooks/useAppContext";
+import { Timestamp } from "firebase/firestore";
+import { FaUserCircle } from "react-icons/fa";
 
 interface PostProps {
   post: PostType;
@@ -8,14 +10,25 @@ interface PostProps {
   onDelete?: (post: PostType) => void;
 }
 
-/**
- * Post Component
- * Displays a single post with mood, timestamp, body content, and edit/delete buttons
- * Handles post editing and deletion internally
- */
+// Custom Types
+export type PostType = {
+  userName: string;
+  userPhotoURL: string;
+  id: string;
+  createdAt: Timestamp;
+  itemName: string | undefined;
+  uid: string;
+  body: string;
+};
+
 export default function Post({ post, onEdit, onDelete }: PostProps) {
-  const { updatePost: updatePostInFirebase, deletePost: deletePostFromFirebase } = useFirestore();
-  const foundMood = delFolks.find((folk) => folk.id === post.mood);
+  const { currentUser } = useAppContext()
+  const currentUserPhotoURL = currentUser?.photoURL || ""
+  const {
+    updatePost: updatePostInFirebase,
+    deletePost: deletePostFromFirebase,
+  } = useFirestore();
+  const foundPost = delFolks.find((folk) => folk.id === post.itemName);
 
   const options: Intl.DateTimeFormatOptions = {
     year: "numeric",
@@ -68,23 +81,23 @@ export default function Post({ post, onEdit, onDelete }: PostProps) {
         <h3 id="post-timestamp" className="text-xl font-Cabin font-bold -mt-14">
           {postDate}
         </h3>
-        {foundMood && (
+        {foundPost && (
           <div className="flex flex-col items-center gap-2 mt-2 mr-2">
             <img
-              src={foundMood.imageUrl}
-              alt={foundMood.name}
+              src={foundPost.imageUrl}
+              alt={foundPost.name}
               className="w-14 h-14 rounded-full object-cover object-center"
             />
-            <span className="font-bold text-sm">{foundMood.name}</span>
+            <span className="font-bold text-sm">{foundPost.name}</span>
           </div>
         )}
       </div>
 
-      {/* <div className="flex items-center mb-4">
+      <div className="flex items-center my-4">
         <div className="w-10 h-10 mr-2">
-          {post.userPhotoURL !== "" ? (
+          {currentUserPhotoURL !== "" ? (
             <img
-              src={post.userPhotoURL}
+              src={currentUserPhotoURL}
               referrerPolicy="no-referrer"
               crossOrigin="anonymous"
               alt="profile picture"
@@ -95,11 +108,14 @@ export default function Post({ post, onEdit, onDelete }: PostProps) {
           )}
         </div>
         <span className="font-bold text-lg text-amber-900">
-          {post.userName}
+          {currentUser?.displayName}
         </span>
-      </div> */}
+      </div>
 
-      <div id="post-body" className="w-full text-xl whitespace-pre-wrap p-2 mt-2">
+      <div
+        id="post-body"
+        className="w-full text-xl whitespace-pre-wrap p-2 mt-2"
+      >
         {post.body.split(/\r\n|\n/g).map((line, index) => {
           const urlRegex = /(https?:\/\/[^\s]+)/g;
           const parts = line.split(urlRegex);

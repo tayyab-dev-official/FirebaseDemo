@@ -1,10 +1,11 @@
 import { useAppContext } from '../hooks/useAppContext'
-import { useFirebaseAuthentication } from '../hooks/useFirebaseAuthentication'
 
 export default function Profile() {
-    const { auth, user, setUser, setUpdateProfile, provider } = useAppContext()
-    const { updateUserProfile } = useFirebaseAuthentication(auth, provider)
-    const userName = user?.displayName
+    const { 
+      currentUser,
+      setIsUpdateUserProfile,
+      updateUserProfile } = useAppContext();
+    const userName = currentUser?.displayName
 
     async function handleClick(event: React.MouseEvent) {
         const { id }= event.currentTarget
@@ -12,14 +13,14 @@ export default function Profile() {
         if (id === "btn-profile-update") {
             const displayName = getInputValue("#input-user-name")
             const photoURL = getInputValue("#input-profile-picture")
-            
-            const currentUser = auth.currentUser
-            const updatedUser = await updateUserProfile(currentUser, displayName, photoURL)
-            
-            if (updatedUser) {
-                setUser(updatedUser)
-                setUpdateProfile(false)
+
+            if (currentUser) {
+              await updateUserProfile(
+                currentUser,
+                {displayName, photoURL}
+              );
             }
+            setIsUpdateUserProfile(false);
         }
     }
 

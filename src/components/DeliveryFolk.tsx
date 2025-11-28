@@ -1,33 +1,36 @@
-import { delFolks } from "../DelFolksData";
-
+import { delFolks } from "../data/DelFolksData";
+import chickenCurryCutImg from "../assets/Chicken-Curry-Cut.png"
+import chickenBonelessCutImg from "../assets/boneless-chicken.jpg"
+import chickenKeemaCutImg from "../assets/chicken-keema.png"
 interface DeliveryFolkProps {
-  moodState: string | undefined;
-  onMoodChange: (moodId: string | undefined) => void;
+  selectedFolk: string | undefined;
+  OnselectedFolkChange: (moodId: string | undefined) => void;
 }
 
-/**
- * DeliveryFolk Component
- * Displays a list of delivery personnel (delFolks) for selection
- * Allows users to toggle selection of a delivery person
- */
 export default function DeliveryFolk({
-  moodState,
-  onMoodChange,
+  selectedFolk,
+  OnselectedFolkChange,
 }: DeliveryFolkProps) {
   const delfolksEl = delFolks.map((folk) => {
-    const { id, name, imageUrl, moodText } = folk;
-    const isActive = moodState === id;
-
+    const { id, name, postText } = folk;
+    const isActive = selectedFolk === id;
+    let productImage = undefined
+    if (name.toLocaleLowerCase().includes("boneless")){
+      productImage = chickenBonelessCutImg
+    }
+    else if(name.toLocaleLowerCase().includes("keema")) {
+      productImage = chickenKeemaCutImg
+    }
+    else {
+      productImage = chickenCurryCutImg
+    }
     return (
       <button
         key={id}
         id={id}
         onClick={() => {
-          if (isActive) {
-            onMoodChange(undefined);
-          } else {
-            onMoodChange(id);
-          }
+          if (isActive) {OnselectedFolkChange(undefined)} 
+          else { OnselectedFolkChange(id)}
         }}
         aria-pressed={isActive}
         className={`flex flex-col justify-center items-center gap-2 p-2 transition-all duration-1000 ease-in-out rounded-lg ${
@@ -37,14 +40,17 @@ export default function DeliveryFolk({
         }`}
       >
         <img
-          src={imageUrl}
+          src={productImage}
           alt={name}
-          className="w-12 h-12 rounded-full object-cover object-center"
+          className="w-20 h-20 rounded-full object-cover"
         />
-        <div className="text-center">
+        <div className="">
           <div className="font-bold text-sm">{name}</div>
           <div className="text-xs text-gray-600">
-            {moodText.split(" - ")[1]}
+            {postText.split(" - ")[1]}
+          </div>
+          <div className="text-green-600 font-bold">
+            {postText.split(" - ")[2]}
           </div>
         </div>
       </button>
