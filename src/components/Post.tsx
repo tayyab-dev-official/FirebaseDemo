@@ -4,6 +4,10 @@ import { useAppContext } from "../hooks/useAppContext";
 import { Timestamp } from "firebase/firestore";
 import { FaUserCircle } from "react-icons/fa";
 
+import chickenCurryCutImg from "../assets/Chicken-Curry-Cut.png";
+import chickenBonelessCutImg from "../assets/boneless-chicken.jpg";
+import chickenKeemaCutImg from "../assets/chicken-keema.png";
+
 interface PostProps {
   post: PostType;
   onEdit?: (post: PostType) => void;
@@ -30,9 +34,14 @@ export default function Post({ post, onEdit, onDelete }: PostProps) {
   } = useFirestore();
   const foundPost = delFolks.find((folk) => folk.id === post.itemName);
   if (foundPost) {
-    console.log(foundPost)
+    if (foundPost.name.toLocaleLowerCase().includes("boneless")) {
+      foundPost.imageUrl = chickenBonelessCutImg;
+    } else if (foundPost.name.toLocaleLowerCase().includes("keema")) {
+      foundPost.imageUrl = chickenKeemaCutImg;
+    } else {
+      foundPost.imageUrl = chickenCurryCutImg;
+    }
   }
-
   const options: Intl.DateTimeFormatOptions = {
     year: "numeric",
     month: "short",
