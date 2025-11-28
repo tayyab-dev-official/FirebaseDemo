@@ -187,7 +187,7 @@ export default function Dashboard() {
                   setselectedFolk(undefined);
                 }
               }}
-              className="bg-blue-600 py-2 rounded-lg font-bold text-white text-xl"
+              className="bg-blue-600 py-2 rounded-lg font-bold text-white text-xl min-w-[350px] self-center"
             >
               Order
             </button>

@@ -36,10 +36,10 @@ export default function DeliveryFolk({
           }
         }}
         aria-pressed={isActive}
-        className={`w-5/6 max-w-[350px] min-w-[300px] mx-auto flex flex-col items-center gap-4 p-2 transition-all duration-1000 ease-in-out rounded-lg bg-orange-400 mb-4 scale-90 ${
+        className={`w-5/6 max-w-[350px] min-w-[300px] flex flex-col items-center gap-4 p-2 transition-all duration-1000 ease-in-out rounded-lg bg-orange-400 scale-95 ${
           isActive
             ? "scale-100 ring-4 ring-blue-400 opacity-100"
-            : "hover:scale-95 hover:opacity-100 opacity-70"
+            : "hover:scale-98 hover:opacity-100 opacity-70"
         }`}
       >
         <div className="w-3/4 h-3/4">
@@ -63,7 +63,7 @@ export default function DeliveryFolk({
   });
 
   return (
-    <div id="mood-container" className="w-full flex flex-wrap gap-2">
+    <div id="mood-container" className="w-full flex flex-wrap justify-center gap-2 mx-auto">
       {delfolksEl}
     </div>
   );
