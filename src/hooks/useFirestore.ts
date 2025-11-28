@@ -124,7 +124,7 @@ export function useFirestore() {
           userName: (data.userName as string) ?? "",
           userPhotoURL: (data.userPhotoURL as string) ?? "",
           createdAt: (data.createdAt as Timestamp) ?? null,
-          mood: (data.mood as string | undefined) ?? undefined,
+          itemName: (data.mood as string | undefined) ?? undefined,
           uid: (data.uid as string) ?? "",
           body: (data.body as string) ?? "",
         };
