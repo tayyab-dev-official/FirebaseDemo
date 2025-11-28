@@ -1,8 +1,8 @@
 import { delFolks } from "../data/DelFolksData";
 import { useFirestore } from "../hooks/useFirestore";
-import { useAppContext } from "../hooks/useAppContext";
+// import { useAppContext } from "../hooks/useAppContext";
 import { Timestamp } from "firebase/firestore";
-import { FaUserCircle } from "react-icons/fa";
+// import { FaUserCircle } from "react-icons/fa";
 
 import chickenCurryCutImg from "../assets/Chicken-Curry-Cut.png";
 import chickenBonelessCutImg from "../assets/boneless-chicken.jpg";
@@ -26,8 +26,8 @@ export type PostType = {
 };
 
 export default function Post({ post, onEdit, onDelete }: PostProps) {
-  const { currentUser } = useAppContext()
-  const currentUserPhotoURL = currentUser?.photoURL || ""
+  // const { currentUser } = useAppContext()
+  // const currentUserPhotoURL = currentUser?.photoURL || ""
   const {
     updatePost: updatePostInFirebase,
     deletePost: deletePostFromFirebase,
@@ -87,25 +87,44 @@ export default function Post({ post, onEdit, onDelete }: PostProps) {
   return (
     <div
       id={post.id}
-      className="relative w-full min-h-[180px] flex flex-wrap p-2 rounded-md shadow-lg bg-orange-200"
+      className="relative w-full min-h-[180px] flex  flex-col p-2 rounded-md shadow-lg bg-orange-200"
     >
-      <div className="w-full flex items-center justify-between">
-        <h3 id="post-timestamp" className="text-xl font-Cabin font-bold -mt-14">
+      <div className="w-full flex items-start justify-between">
+        <h3 id="post-timestamp" className="text-xl font-Cabin font-bold">
           {postDate}
         </h3>
         {foundPost && (
-          <div className="flex flex-col items-center gap-2 mt-2 mr-2">
+          <div className="flex flex-col items-center gap-2">
             <img
               src={foundPost.imageUrl}
               alt={foundPost.name}
               className="w-14 h-14 rounded-full object-cover object-center"
             />
-            <span className="font-bold text-sm">{foundPost.name}</span>
+            {/* <span className="font-bold text-sm text-center whitespace-pre-wrap p-2 ring-2 ">
+              {foundPost.name}
+            </span> */}
           </div>
         )}
       </div>
 
-      <div className="flex items-center my-4">
+      <div className="-mt-6">
+        <button
+          onClick={handleUpdatePost}
+          className="mx-auto bg-orange-600 px-6 py-2 rounded-lg font-bold text-white"
+        >
+          Edit
+        </button>
+
+        <button
+          onClick={handleDeletePost}
+          className="mx-auto bg-orange-600 ml-2 px-4 py-2 rounded-lg font-bold text-white"
+        >
+          Delete
+        </button>
+      </div>
+
+
+      {/* <div className="flex items-center my-4">
         <div className="w-10 h-10 mr-2">
           {currentUserPhotoURL !== "" ? (
             <img
@@ -122,7 +141,7 @@ export default function Post({ post, onEdit, onDelete }: PostProps) {
         <span className="font-bold text-lg text-amber-900">
           {currentUser?.displayName}
         </span>
-      </div>
+      </div> */}
 
       <div
         id="post-body"
@@ -157,20 +176,6 @@ export default function Post({ post, onEdit, onDelete }: PostProps) {
           );
         })}
       </div>
-
-      <button
-        onClick={handleUpdatePost}
-        className="mx-auto bg-orange-600 mt-4 px-6 py-2 rounded-lg font-bold absolute left-2 top-10 text-white"
-      >
-        Edit
-      </button>
-
-      <button
-        onClick={handleDeletePost}
-        className="mx-auto bg-orange-600 mt-4 px-4 py-2 rounded-lg font-bold absolute left-25 top-10 text-white"
-      >
-        Delete
-      </button>
     </div>
   );
 }

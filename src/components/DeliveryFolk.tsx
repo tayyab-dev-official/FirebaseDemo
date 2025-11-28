@@ -29,27 +29,32 @@ export default function DeliveryFolk({
         key={id}
         id={id}
         onClick={() => {
-          if (isActive) {OnselectedFolkChange(undefined)} 
-          else { OnselectedFolkChange(id)}
+          if (isActive) {
+            OnselectedFolkChange(undefined);
+          } else {
+            OnselectedFolkChange(id);
+          }
         }}
         aria-pressed={isActive}
-        className={`flex flex-col justify-center items-center gap-2 p-2 transition-all duration-1000 ease-in-out rounded-lg ${
+        className={`w-5/6 max-w-[350px] min-w-[300px] mx-auto flex flex-col items-center gap-4 p-2 transition-all duration-1000 ease-in-out rounded-lg bg-orange-400 mb-4 scale-90 ${
           isActive
-            ? "scale-110 ring-4 ring-blue-400 opacity-100"
-            : "hover:scale-105 hover:opacity-100 opacity-70"
+            ? "scale-100 ring-4 ring-blue-400 opacity-100"
+            : "hover:scale-95 hover:opacity-100 opacity-70"
         }`}
       >
-        <img
-          src={productImage}
-          alt={name}
-          className="w-20 h-20 rounded-full object-cover"
-        />
-        <div className="">
-          <div className="font-bold text-sm">{name}</div>
-          <div className="text-xs text-gray-600">
+        <div className="w-3/4 h-3/4">
+          <img
+            src={productImage}
+            alt={name}
+            className="w-full h-full rounded-full object-cover"
+          />
+        </div>
+        <div className="flex flex-col gap-4 mb-4">
+          <div className="font-bold text-4xl">{name}</div>
+          <div className="text-4xl text-gray-600">
             {postText.split(" - ")[1]}
           </div>
-          <div className="text-green-600 font-bold">
+          <div className="text-green-600 font-bold text-4xl">
             {postText.split(" - ")[2]}
           </div>
         </div>
@@ -58,7 +63,7 @@ export default function DeliveryFolk({
   });
 
   return (
-    <div id="mood-container" className="flex flex-wrap gap-2 justify-center">
+    <div id="mood-container" className="w-full flex flex-wrap gap-2">
       {delfolksEl}
     </div>
   );

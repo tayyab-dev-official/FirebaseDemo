@@ -145,16 +145,16 @@ export default function Dashboard() {
 
   return (
     <>
-      <div className="w-full min-w-[390px] sm:max-w-[700px] p-2 flex flex-col justify-center">
+      <div className="w-full min-w-[390px] sm:max-w-[1200px] p-2 flex flex-col justify-center">
         <Header
           photoURL={currentUser.photoURL || ""}
           onProfileClick={() => setIsUpdateUserProfile(true)}
           onLogoutClick={firebaseSignOut}
         />
-        <h2 className="text-2xl p-2 text-orange-600 font-Calistoga tracking-wider">
+        <h2 className="text-2xl p-4 text-orange-600 font-Calistoga tracking-wider">
           Welcome, {currentUserName}
         </h2>
-        <section className="w-full my-8 flex flex-col gap-6 p-2">
+        <section className="w-full sm:mt-6 md:mt-12 flex flex-col gap-6 p-4 sm:p-2">
           <DeliveryFolk selectedFolk={selectedFolk} OnselectedFolkChange={setselectedFolk} />
           <textarea
             name="post-area"
