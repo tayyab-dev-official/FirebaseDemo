@@ -24,9 +24,9 @@ export default function Product({
           }
         }}
         aria-pressed={isActive}
-        className={`w-5/6 max-w-[250px] min-w-[150px] flex flex-col items-center gap-4 p-2 transition-all duration-1000 ease-in-out rounded-lg bg-orange-300 scale-95 ${
+        className={`max-w-[250px] min-w-[150px] flex flex-col items-center gap-4 p-4 transition-all duration-1000 ease-in-out rounded-lg bg-orange-300 scale-95 ${
           isActive
-            ? "scale-100 ring-4 ring-blue-400"
+            ? "scale-100 ring-8 ring-orange-800"
             : "hover:scale-98 hover:opacity-100"
         }`}
       >

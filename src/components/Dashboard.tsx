@@ -144,7 +144,7 @@ export default function Dashboard() {
 
   return (
     <>
-      <div className="w-full min-w-[390px] sm:max-w-[1200px] p-2 flex flex-col justify-center">
+      <div className="w-full mx-auto min-w-[350px] sm:max-w-[1200px] p-2 flex flex-col justify-center">
         <Header
           photoURL={currentUser.photoURL || ""}
           onProfileClick={() => setIsUpdateUserProfile(true)}

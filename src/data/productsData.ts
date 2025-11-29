@@ -92,8 +92,8 @@ export const products = [
   // ================================
 
   {
-    id: "Fresh Apples - 1 Kilogram",
-    name: "Fresh Apples",
+    id: "Apples - 1 Kilogram",
+    name: "Apples",
     category: "Fresh Fruits",
     subCategory: "Apple",
     imageUrl: "/fruits/apple.jpg",
@@ -167,24 +167,24 @@ export const products = [
   //     "https://images.unsplash.com/photo-1615485925600-4966bb21cbbd?w=400&h=400&fit=crop",
   //   description: "Ripe Papaya - 1 Piece - ₹70",
   // },
-  // {
-  //   id: "Fresh Watermelon - 1 Piece",
-  //   name: "Watermelon",
-  //   category: "Fresh Fruits",
-  //   subCategory: "Watermelon",
-  //   imageUrl:
-  //     "/fruits/watermelon-lines.jpg",
-  //   description: "Fresh Watermelon - 1 Piece - ₹120",
-  // },
-  // {
-  //   id: "Fresh Kiwi - 3 Pieces",
-  //   name: "Kiwi",
-  //   category: "Fresh Fruits",
-  //   subCategory: "Kiwi",
-  //   imageUrl:
-  //     "/fruits/kiwi.png",
-  //   description: "Fresh Kiwi - 3 Pieces - ₹150",
-  // },
+  {
+    id: "Fresh Watermelon - 1 Piece",
+    name: "Watermelon",
+    category: "Fresh Fruits",
+    subCategory: "Watermelon",
+    imageUrl:
+      "/fruits/watermelon-lines.jpg",
+    description: "Fresh Watermelon - 1 Piece - ₹120",
+  },
+  {
+    id: "Fresh Kiwi - 3 Pieces",
+    name: "Kiwi",
+    category: "Fresh Fruits",
+    subCategory: "Kiwi",
+    imageUrl:
+      "/fruits/kiwi.png",
+    description: "Fresh Kiwi - 3 Pieces - ₹150",
+  },
   // {
   //   id: "Fresh Strawberries - 250 Grams",
   //   name: "Strawberries",
