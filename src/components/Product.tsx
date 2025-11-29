@@ -24,7 +24,7 @@ export default function Product({
           }
         }}
         aria-pressed={isActive}
-        className={`w-5/6 max-w-[350px] min-w-[300px] flex flex-col items-center gap-4 p-2 transition-all duration-1000 ease-in-out rounded-lg bg-orange-400 scale-95 ${
+        className={`w-5/6 max-w-[350px] min-w-[300px] flex flex-col items-center gap-4 p-2 transition-all duration-1000 ease-in-out rounded-lg bg-orange-300 scale-95 ${
           isActive
             ? "scale-100 ring-4 ring-blue-400"
             : "hover:scale-98 hover:opacity-100"
