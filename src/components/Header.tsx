@@ -46,7 +46,13 @@ export default function Header({
               <FaUserCircle className="w-full h-full rounded-full fill-blue-500 scale-110" />
             )}
           </div> */}
-          <div className="flex flex-wrap gap-4 items-center">
+          <div className="flex gap-4 items-center">
+            <button
+              onClick={onLogoutClick}
+              className="flex items-center justify-center shadow-md px-1 sm:px-4 py-2 rounded-md bg-orange-400 text-white font-bold hover:ring-4 ring-blue-400 hover:cursor-pointer hover:scale-125 transition-all duration-600 ease-in after-content-none sm:after:content-['Logout']"
+            >
+              <FaSignOutAlt className="text-xl" />
+            </button>
             <div
               id="user-profile"
               onClick={onProfileClick}
@@ -63,19 +69,13 @@ export default function Header({
                     referrerPolicy="no-referrer"
                     crossOrigin="anonymous"
                     alt="profile picture"
-                    className="w-full h-full hover:scale-105 hover:ring-4 ring-blue-400 rounded-full transition-all duration-500 ease-in-out"
+                    className="w-full h-full hover:scale-110 hover:ring-4 ring-blue-400 rounded-full transition-all duration-500 ease-in-out"
                   />
                 ) : (
                   <FaUserCircle className="w-full h-full rounded-full fill-orange-400 scale-110" />
                 )}
               </div>
             </div>
-            <button
-              onClick={onLogoutClick}
-              className="flex items-center justify-center shadow-md px-1 sm:px-4 py-2 rounded-md bg-orange-400 text-white font-bold hover:ring-4 ring-blue-400 hover:cursor-pointer hover:scale-125 transition-all duration-600 ease-in after-content-none sm:after:content-['Logout']"
-            >
-              <FaSignOutAlt className="text-xl" />
-            </button>
           </div>
         </nav>
       </div>
