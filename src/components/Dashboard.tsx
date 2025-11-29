@@ -2,7 +2,6 @@
 import { useEffect } from "react";
 import {
   collection,
-  Timestamp,
   onSnapshot,
   query,
   where,
@@ -22,7 +21,7 @@ import Login from "./Login";
 import Profile from "./Profile";
 import Header from "./Header";
 import PostFilters from "./PostFilters";
-import DeliveryFolk from "./DeliveryFolk"
+import DeliveryFolk from "./Product"
 import Post from "./Post"
 
 export default function Dashboard() {
@@ -31,8 +30,8 @@ export default function Dashboard() {
     firebaseSignOut,
     IsUpdateUserProfile,
     setIsUpdateUserProfile,
-    selectedFolk,
-    setselectedFolk,
+    selectedProduct,
+    setselectedProduct,
     posts,
     setPosts,
     postFilter,
@@ -112,15 +111,15 @@ export default function Dashboard() {
     }
     const unsubscribe = onSnapshot(activeQuery, (postsSnapshot) => {
       const firebasePostList: PostType[] = postsSnapshot.docs.map((docSnapshot) => {
-        const data = docSnapshot.data() as Record<string, unknown>;
+        const data = docSnapshot.data();
         return {
           id: docSnapshot.id,
-          userName: (data.userName as string) ?? "",
-          userPhotoURL: (data.userPhotoURL as string) ?? "",
-          createdAt: (data.createdAt as Timestamp) ?? null,
-          itemName: (data.mood as string | undefined) ?? undefined,
-          uid: (data.uid as string) ?? "",
-          body: (data.body as string) ?? "",
+          userName: data.userName,
+          userPhotoURL: data.userPhotoURL,
+          createdAt: data.createdAt,
+          itemName: data.itemName,
+          uid: data.uid,
+          body: data.body,
         };
       });
 
@@ -154,8 +153,8 @@ export default function Dashboard() {
         <h2 className="text-2xl p-4 text-orange-600 font-Calistoga tracking-wider">
           Welcome, {currentUserName}
         </h2>
-        <section className="w-full sm:mt-6 md:mt-12 flex flex-col gap-6 p-4 sm:p-2">
-          <DeliveryFolk selectedFolk={selectedFolk} OnselectedFolkChange={setselectedFolk} />
+        <section className="w-full flex flex-col gap-6 p-4 sm:p-2">
+          <DeliveryFolk selectedProduct={selectedProduct} OnselectedProductChange={setselectedProduct} />
           <textarea
             name="post-area"
             id="post-area"
@@ -168,8 +167,8 @@ export default function Dashboard() {
             }}
           ></textarea>
           <div className="w-full flex flex-col gap-2">
-            {!selectedFolk && (
-              <p id="add-mood-warning" className="text-red-600 font-bold"></p>
+            {!selectedProduct && (
+              <p id="add-product-warning" className="text-red-600 font-bold"></p>
             )}
             <button
               id="btn-post"
@@ -178,13 +177,13 @@ export default function Dashboard() {
                 const docRef = await publishPostToFirebase(
                   currentUser,
                   postBody,
-                  selectedFolk,
+                  selectedProduct,
                   currentUser?.displayName,
                   currentUser?.photoURL,
-                  "#add-mood-warning"
+                  "#add-product-warning"
                 );
                 if (docRef) {
-                  setselectedFolk(undefined);
+                  setselectedProduct(undefined);
                 }
               }}
               className="bg-blue-600 py-2 rounded-lg font-bold text-white text-xl min-w-[350px] self-center"

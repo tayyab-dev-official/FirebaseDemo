@@ -19,45 +19,66 @@ export default function Header({
 }: HeaderProps) {
   return (
     <>
-      <div className="flex flex-col items-center">
-        <h1 className="text-5xl font-Calistoga">
+      <div className="flex flex-col justify-center m-2">
+        <h1 className="text-5xl font-Calistoga text-center">
           <span className="text-orange-400">Delfo</span>
         </h1>
-        <div className="w-20 h-20">
-          <img src={logo} className="w-full h-full" alt="Delfo logo" />
-        </div>
-      </div>
 
-      <nav className="w-1/4 max-w-[150px] min-w-[140px] mx-auto md:absolute md:top-4 md:right-6 flex gap-2 flex-col items-center justify-center bg-orange-300 p-2 rounded-md">
-        <div id="img-container" className="w-28 h-28">
-          {photoURL ? (
+        <nav className="w-full flex justify-between items-center p-2">
+          <div className="w-18 h-18 flex items-center justify-center rounded-lg">
             <img
-              id="profile-image"
-              src={photoURL}
-              referrerPolicy="no-referrer"
-              crossOrigin="anonymous"
-              alt="profile picture"
-              className="w-full h-full rounded-full"
+              src={logo}
+              className="w-full h-full object-cover object-center"
+              alt="Delfo logo"
             />
-          ) : (
-            <FaUserCircle className="w-full h-full rounded-full fill-blue-500 scale-110" />
-          )}
-        </div>
-        <div
-          id="user-profile"
-          onClick={onProfileClick}
-          className="cursor-pointer hover:text-blue-600 transition-colors shadow-lg font-bold text-md text-white bg-blue-400 px-8 py-2 rounded-md"
-        >
-          Profile
-        </div>
-        <button
-          onClick={onLogoutClick}
-          className="flex items-center gap-2 shadow-md px-4 py-2 rounded-md bg-blue-400 text-white font-bold hover:bg-blue-500 transition-colors"
-        >
-          <FaSignOutAlt className="text-xl" />
-          Logout
-        </button>
-      </nav>
+          </div>
+          {/* <div id="img-container" className="w-20 h-20">
+            {photoURL ? (
+              <img
+                id="profile-image"
+                src={photoURL}
+                referrerPolicy="no-referrer"
+                crossOrigin="anonymous"
+                alt="profile picture"
+                className="w-full h-full rounded-full"
+              />
+            ) : (
+              <FaUserCircle className="w-full h-full rounded-full fill-blue-500 scale-110" />
+            )}
+          </div> */}
+          <div className="flex flex-wrap gap-4 items-center">
+            <div
+              id="user-profile"
+              onClick={onProfileClick}
+              className="cursor-pointer shadow-lg rounded-full"
+            >
+              <div
+                id="img-container"
+                className="w-12 h-12 rounded full opacity-100"
+              >
+                {photoURL ? (
+                  <img
+                    id="profile-image"
+                    src={photoURL}
+                    referrerPolicy="no-referrer"
+                    crossOrigin="anonymous"
+                    alt="profile picture"
+                    className="w-full h-full hover:scale-105 hover:ring-4 ring-blue-400 rounded-full transition-all duration-500 ease-in-out"
+                  />
+                ) : (
+                  <FaUserCircle className="w-full h-full rounded-full fill-blue-500 scale-110" />
+                )}
+              </div>
+            </div>
+            <button
+              onClick={onLogoutClick}
+              className="flex items-center justify-center shadow-md px-1 sm:px-4 py-2 rounded-md bg-orange-400 text-white font-bold hover:ring-4 ring-blue-400 hover:cursor-pointer hover:scale-125 transition-all duration-600 ease-in after-content-none sm:after:content-['Logout']"
+            >
+              <FaSignOutAlt className="text-xl" />
+            </button>
+          </div>
+        </nav>
+      </div>
     </>
   );
 }

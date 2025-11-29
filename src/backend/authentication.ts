@@ -12,6 +12,8 @@ import {
 // Firebase Authentication Setup
 // ------------------------------------------------------
 import { app } from './setup'
+const firebaseAuth = getAuth(app);
+
 import {
     getAuth,
     createUserWithEmailAndPassword,
@@ -24,7 +26,6 @@ import {
     type User
 } from "firebase/auth";
 
-const firebaseAuth = getAuth(app);
 
 // ------------------------------------------------------
 // Context Types
@@ -146,8 +147,7 @@ export default function useFirebaseAuthentication(): AuthContextType {
     // --------------------------------------
     // Auth State Listener
     // --------------------------------------
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(firebaseAuth, async (user) => {
+    const authStateChangedListener = useCallback(async (user: User | null) => {
             if (!user) {
                 console.log("[AUTH] No user — clearing context.");
                 setCurrentUser(null);
@@ -168,13 +168,15 @@ export default function useFirebaseAuthentication(): AuthContextType {
 
             setCurrentUser(user);
             setIsLoadingCurrentUser(false);
-        });
+        }, []);
 
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(firebaseAuth, authStateChangedListener)
         return () => {
-            console.log("[AUTH] Stopped listening to auth state.");
             unsubscribe();
+            console.log("[AUTH] Stopped listening to auth state.");
         };
-    }, []);
+    }, [authStateChangedListener]);
 
     // --------------------------------------
     // Memoized Return Value (Prevents rerenders)

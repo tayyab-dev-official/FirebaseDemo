@@ -44,7 +44,7 @@ export function useFirestore() {
   async function publishPost(
     user: User | null,
     postBody: string,
-    mood: string | undefined,
+    itemName: string | undefined,
     displayName: string | null | undefined,
     photoURL: string | null | undefined,
     warningElementSelector?: string
@@ -64,10 +64,10 @@ export function useFirestore() {
         return null;
       }
 
-      if (!mood) {
+      if (!itemName) {
         setError("Delivery Folk selection is mandatory");
         if (warningEl) {
-          warningEl.textContent = "Category selection is mandatory.";
+          warningEl.textContent = "Item selection is mandatory.";
         }
         return null;
       }
@@ -85,7 +85,7 @@ export function useFirestore() {
         userPhotoURL: photoURL,
         body: postBody,
         uid: user.uid,
-        mood: mood,
+        itemName: itemName,
         createdAt: serverTimestamp(),
       };
 

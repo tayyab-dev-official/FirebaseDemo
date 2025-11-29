@@ -23,8 +23,8 @@ export type AppContextType = {
   updateUserProfile: (user: User, props: updateUserProfileType) => Promise<void>
   IsUpdateUserProfile: boolean;
   setIsUpdateUserProfile: (value: boolean) => void;
-  selectedFolk: string | undefined;
-  setselectedFolk: (value: string | undefined) => void;
+  selectedProduct: string | undefined;
+  setselectedProduct: (value: string | undefined) => void;
   posts: PostType[];
   setPosts: (value: PostType[]) => void;
   postFilter: string | undefined;
@@ -46,7 +46,7 @@ export function useAppState(): AppContextType {
   
   // App state
   const [IsUpdateUserProfile, setIsUpdateUserProfile] = useState<boolean>(false)
-  const [selectedFolk, setselectedFolk] = useState<string | undefined>(undefined)
+  const [selectedProduct, setselectedProduct] = useState<string | undefined>(undefined)
   const [posts, setPosts] = useState<PostType[]>([])
   const [postFilter, setPostFilter] = useState<string | undefined>(undefined)
 
@@ -55,10 +55,10 @@ export function useAppState(): AppContextType {
     IsLoadingCurrentUser,
     firebaseSignOut,
     updateUserProfile,
-    selectedFolk,
+    selectedProduct,
     IsUpdateUserProfile,
     setIsUpdateUserProfile,
-    setselectedFolk,
+    setselectedProduct,
     posts,
     setPosts,
     postFilter,

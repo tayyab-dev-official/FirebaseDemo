@@ -1,12 +1,8 @@
-import { delFolks } from "../data/DelFolksData";
+import { products } from "../data/productsData"
 import { useFirestore } from "../hooks/useFirestore";
 // import { useAppContext } from "../hooks/useAppContext";
 import { Timestamp } from "firebase/firestore";
 // import { FaUserCircle } from "react-icons/fa";
-
-import chickenCurryCutImg from "../assets/Chicken-Curry-Cut.png";
-import chickenBonelessCutImg from "../assets/boneless-chicken.jpg";
-import chickenKeemaCutImg from "../assets/chicken-keema.png";
 
 interface PostProps {
   post: PostType;
@@ -16,13 +12,13 @@ interface PostProps {
 
 // Custom Types
 export type PostType = {
-  userName: string;
-  userPhotoURL: string;
-  id: string;
-  createdAt: Timestamp;
-  itemName: string | undefined;
-  uid: string;
-  body: string;
+  id: string,
+  userName: string,
+  userPhotoURL: string,
+  createdAt: Timestamp,
+  itemName: string | undefined,
+  uid: string,
+  body: string,
 };
 
 export default function Post({ post, onEdit, onDelete }: PostProps) {
@@ -32,16 +28,9 @@ export default function Post({ post, onEdit, onDelete }: PostProps) {
     updatePost: updatePostInFirebase,
     deletePost: deletePostFromFirebase,
   } = useFirestore();
-  const foundPost = delFolks.find((folk) => folk.id === post.itemName);
-  if (foundPost) {
-    if (foundPost.name.toLocaleLowerCase().includes("boneless")) {
-      foundPost.imageUrl = chickenBonelessCutImg;
-    } else if (foundPost.name.toLocaleLowerCase().includes("keema")) {
-      foundPost.imageUrl = chickenKeemaCutImg;
-    } else {
-      foundPost.imageUrl = chickenCurryCutImg;
-    }
-  }
+  const foundPost = products.find((product) => {
+    return product.id === post.itemName
+  });
   const options: Intl.DateTimeFormatOptions = {
     year: "numeric",
     month: "short",
@@ -122,7 +111,6 @@ export default function Post({ post, onEdit, onDelete }: PostProps) {
           Delete
         </button>
       </div>
-
 
       {/* <div className="flex items-center my-4">
         <div className="w-10 h-10 mr-2">
