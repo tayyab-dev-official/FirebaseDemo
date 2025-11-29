@@ -66,7 +66,7 @@ export default function Header({
                     className="w-full h-full hover:scale-105 hover:ring-4 ring-blue-400 rounded-full transition-all duration-500 ease-in-out"
                   />
                 ) : (
-                  <FaUserCircle className="w-full h-full rounded-full fill-blue-500 scale-110" />
+                  <FaUserCircle className="w-full h-full rounded-full fill-orange-400 scale-110" />
                 )}
               </div>
             </div>
