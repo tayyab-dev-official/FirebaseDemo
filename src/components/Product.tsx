@@ -8,7 +8,7 @@ export default function Product({
   selectedProduct,
   OnselectedProductChange,
 }: ProductProps) {
-  const productsEl = products.map((product) => {
+  const productsEl = products.map((product, index) => {
     const { id, name, imageUrl, description } = product;
     const isActive = selectedProduct === id;
     
@@ -24,11 +24,13 @@ export default function Product({
           }
         }}
         aria-pressed={isActive}
-        className={`max-w-[250px] min-w-[150px] flex flex-col items-center gap-4 p-4 transition-all duration-1000 ease-in-out rounded-lg bg-orange-300 scale-95 ${
-          isActive
-            ? "scale-100 ring-8 ring-orange-800"
-            : "hover:scale-98 hover:opacity-100"
-        }`}
+        style={{ animationDelay: `${index * 0.3}s` }}
+        className={`
+          max-w-[250px] min-w-[150px] flex flex-col items-center gap-4 p-4 
+          transition-all duration-1000 ease-in-out rounded-lg bg-orange-300 
+          animate-move-up opacity-0 scale-95
+          ${isActive ? "scale-100 ring-8 ring-orange-800" : "hover:scale-98"}
+        `}
       >
         <div className="w-3/4 h-3/4">
           <img

@@ -160,7 +160,6 @@ export default function Dashboard() {
             id="post-area"
             placeholder="Write down address and contact number..."
             maxLength={500}
-            autoFocus
             className="w-full p-4 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-1 focus:ring-blue-300"
             style={{
               resize: "none",

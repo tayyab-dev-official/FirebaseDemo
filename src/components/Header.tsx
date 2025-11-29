@@ -19,7 +19,7 @@ export default function Header({
 }: HeaderProps) {
   return (
     <>
-      <div className="flex flex-col justify-center m-2">
+      <div className="flex flex-col justify-center m-2 border-b-8 border-amber-600">
         <h1 className="text-5xl font-Calistoga text-center">
           <span className="text-orange-400">Delfo</span>
         </h1>

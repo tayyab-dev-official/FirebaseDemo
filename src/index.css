@@ -5,4 +5,16 @@
 @theme {
     --font-Cabin: "Cabin", sains-serif;
     --font-Calistoga: "Calistoga", sains-serif;
+    --animate-move-up: move-up 1s ease forwards;
+
+    @keyframes move-up {
+        0% {
+            transform: translateY(5%); 
+            opacity: 0;
+        }
+        100% {
+            transform: translateY(0%); 
+            opacity: 1;
+        }
+    }
 }
