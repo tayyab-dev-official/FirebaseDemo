@@ -153,8 +153,8 @@ export default function Dashboard() {
         <h2 className="text-2xl p-4 text-orange-600 font-Calistoga tracking-wider">
           Welcome, {currentUserName}
         </h2>
-        <section className="w-full flex flex-col gap-6 p-4 sm:p-2">
-          <DeliveryFolk selectedProduct={selectedProduct} OnselectedProductChange={setselectedProduct} />
+        <DeliveryFolk selectedProduct={selectedProduct} OnselectedProductChange={setselectedProduct} />
+        <section className="w-full max-w-[800px] mx-auto flex flex-col gap-6 p-4 sm:p-2">
           <textarea
             name="post-area"
             id="post-area"
