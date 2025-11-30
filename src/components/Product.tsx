@@ -1,4 +1,5 @@
 import { products } from "../data/productsData"
+import ProductCard from './ProductCard'
 interface ProductProps {
   selectedProduct: string | undefined;
   OnselectedProductChange: (productId: string | undefined) => void;
@@ -8,56 +9,20 @@ export default function Product({
   selectedProduct,
   OnselectedProductChange,
 }: ProductProps) {
-  const productsEl = products.map((product, index) => {
-    const { id, name, imageUrl, description } = product;
-    const isActive = selectedProduct === id;
-    
+  const productsEl = products.map((product, index) => {    
     return (
-      <button
-        key={id}
-        id={id}
-        onClick={() => {
-          if (isActive) {
-            OnselectedProductChange(undefined);
-          } else {
-            OnselectedProductChange(id);
-          }
-        }}
-        aria-pressed={isActive}
-        style={{ animationDelay: `${index * 0.3}s` }}
-        className={`
-          max-w-[250px] min-w-[150px] flex flex-col items-center gap-4 
-          transition-all duration-1000 ease-in-out rounded-lg bg-orange-300 
-          animate-move-up opacity-0 scale-95 shadow-md shadow-orange-400
-          ${
-            isActive
-              ? "scale-100 ring-8 ring-orange-800"
-              : "hover:scale-98 hover:shadow-xl"
-          }
-        `}
-      >
-        <div className="w-full h-1/2 scal-110">
-          <img
-            src={imageUrl}
-            alt={name}
-            className="w-full h-full rounded-t-lg object-cover"
-          />
-        </div>
-        <div className="flex flex-col gap-4 mb-4">
-          <div className="font-bold text-4xl">{name}</div>
-          <div className="text-4xl text-gray-600">
-            {description.split(" - ")[1]}
-          </div>
-          <div className="text-green-600 font-bold text-4xl">
-            {description.split(" - ")[2]}
-          </div>
-        </div>
-      </button>
+      <ProductCard 
+        key={index}
+        index={index}
+        product={product}
+        selectedProduct={selectedProduct}
+        OnselectedProductChange={OnselectedProductChange}
+      />
     );
   });
 
   return (
-    <div id="product-container" className="w-full flex flex-wrap justify-center gap-2 mx-auto">
+    <div id="product-container" className="w-full flex flex-wrap justify-center gap-2 mx-auto mt-20">
       {productsEl}
     </div>
   );

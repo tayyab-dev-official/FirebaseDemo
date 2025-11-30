@@ -3,9 +3,14 @@
 @import 'tailwindcss';
 
 @theme {
-    --font-Cabin: "Cabin", sains-serif;
-    --font-Calistoga: "Calistoga", sains-serif;
+    --font-Cabin: "Cabin", sans-serif;
+    --font-Calistoga: "Calistoga", sans-serif;
     --animate-move-up: move-up 1s ease forwards;
+    --shadow-image:
+        0px -10px 15px -8px rgba(0, 0, 0, 0.12),  
+        -25px -5px 15px -8px rgba(0, 0, 0, 0.12), 
+        25px -5px 15px -8px rgba(0, 0, 0, 0.12);
+
 
     @keyframes move-up {
         0% {
