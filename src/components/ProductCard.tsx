@@ -41,7 +41,7 @@ export default function ProductCard(props: ProductCardProps) {
                         transition-all duration-1000 ease-in-out rounded-lg bg-orange-300 
                         animate-move-up opacity-0 scale-95 shadow-md shadow-orange-400 mb-20
                         ${
-                          isActive
+                          quantity > 0
                             ? "scale-100 ring-8 ring-orange-800"
                             : "hover:scale-98 hover:shadow-lg"
                         }
