@@ -2,7 +2,23 @@ import { useState } from 'react'
 import { FaPlusSquare } from "react-icons/fa";
 import { FaMinusSquare } from "react-icons/fa";
 
-export default function ProductCard(props) {
+
+type ProductType = {
+    id: string;
+    name: string;
+    category: string;
+    subCategory: string;
+    imageUrl: string;
+    description: string;
+}
+interface ProductCardProps {
+  product: ProductType;
+  index: number;
+  selectedProduct: string | undefined;
+  OnselectedProductChange: (productId: string | undefined) => void;
+}
+
+export default function ProductCard(props: ProductCardProps) {
     const [quantity, setQuantity] = useState(0)    
     const { id, name, imageUrl, description } = props.product;
     const isActive = props.selectedProduct === id;
