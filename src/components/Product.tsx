@@ -22,7 +22,7 @@ export default function Product({
   });
 
   return (
-    <div id="product-container" className="w-full flex flex-wrap justify-center gap-6 mx-auto mt-20">
+    <div id="product-container" className="w-full flex flex-wrap justify-center gap-6 mx-auto mt-28">
       {productsEl}
     </div>
   );
