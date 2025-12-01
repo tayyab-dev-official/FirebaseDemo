@@ -1,4 +1,3 @@
-import { products } from "../data/productsData";
 import { useFirestore } from "../hooks/useFirestore";
 // import { useAppContext } from "../hooks/useAppContext";
 import { Timestamp } from "firebase/firestore";
