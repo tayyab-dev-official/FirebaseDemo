@@ -1,50 +1,18 @@
-import { products } from "../data/productsData";
 import { useFirestore } from "../hooks/useFirestore";
-// import { useAppContext } from "../hooks/useAppContext";
-import { Timestamp } from "firebase/firestore";
-// import { FaUserCircle } from "react-icons/fa";
+import { type PostType } from "./Post";
 
-interface PostProps {
+interface OrderPostProps {
   post: PostType;
   onEdit?: (post: PostType) => void;
   onDelete?: (post: PostType) => void;
 }
 
-// Custom Types
-export type PostType = {
-  id: string;
-  userName: string;
-  userPhotoURL: string;
-  createdAt: Timestamp;
-  itemName: string | undefined;
-  uid: string;
-  body: string;
-  category?: string;
-  // Order-specific fields
-  orderItems?: Array<{
-    productId: string;
-    name: string;
-    quantity: number;
-    price: number;
-    imageUrl: string;
-  }>;
-  totalAmount?: number;
-  orderStatus?: "pending" | "confirmed" | "shipped" | "delivered";
-  paymentMethod?: string;
-  customerName?: string;
-  customerLocation?: string;
-};
-
-export default function Post({ post, onEdit, onDelete }: PostProps) {
-  // const { currentUser } = useAppContext()
-  // const currentUserPhotoURL = currentUser?.photoURL || ""
+export default function OrderPost({ post, onEdit, onDelete }: OrderPostProps) {
   const {
     updatePost: updatePostInFirebase,
     deletePost: deletePostFromFirebase,
   } = useFirestore();
-  const foundPost = products.find((product) => {
-    return product.id === post.itemName;
-  });
+
   const options: Intl.DateTimeFormatOptions = {
     year: "numeric",
     month: "short",
@@ -68,7 +36,7 @@ export default function Post({ post, onEdit, onDelete }: PostProps) {
    * Update the post body with user input via prompt
    */
   async function handleUpdatePost() {
-    const newBody = prompt("Edit the post body.", post.body);
+    const newBody = prompt("Edit the order notes.", post.body);
     if (newBody) {
       const success = await updatePostInFirebase(post.id, newBody);
       if (success) {
@@ -87,19 +55,24 @@ export default function Post({ post, onEdit, onDelete }: PostProps) {
     }
   }
 
+  // Only render if this is an order post
+  if (!post.orderItems || post.orderItems.length === 0) {
+    return null;
+  }
+
   return (
     <div
       id={post.id}
       className="relative w-full flex flex-col p-4 rounded-md shadow-lg bg-orange-200"
     >
       {/* Header with timestamp and category */}
-      <div className="w-full flex items-start justify-between mb-4">
-        <div className="flex items-center gap-2">
+      <div className="w-full flex items-start mb-4">
+        <div className="w-full flex  items-center justify-between gap-2 ring-2">
           <h3 id="post-timestamp" className="text-lg font-Cabin font-bold">
             {postDate}
           </h3>
           {post.category && (
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col justify-center items-center gap-2">
               <img
                 src={post.userPhotoURL}
                 alt={post.category}
@@ -197,44 +170,7 @@ export default function Post({ post, onEdit, onDelete }: PostProps) {
         </div>
       )}
 
-      {/* Post Body (for non-order posts) */}
-      {!post.orderItems && (
-        <div
-          id="post-body"
-          className="w-full text-base whitespace-pre-wrap p-2 mb-4"
-        >
-          {post.body.split(/\r\n|\n/g).map((line, index) => {
-            const urlRegex = /(https?:\/\/[^\s]+)/g;
-            const parts = line.split(urlRegex);
-
-            return (
-              <div key={index} className="w-full">
-                {line ? (
-                  parts.map((part, partIndex) =>
-                    urlRegex.test(part) ? (
-                      <a
-                        key={partIndex}
-                        href={part}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 underline hover:text-blue-800 cursor-pointer break-all"
-                      >
-                        {part}
-                      </a>
-                    ) : (
-                      <span key={partIndex}>{part}</span>
-                    )
-                  )
-                ) : (
-                  <br />
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      {/* Edit and Delete Buttons */}
+      {/* Action Buttons */}
       <div className="flex gap-2">
         <button
           onClick={handleUpdatePost}

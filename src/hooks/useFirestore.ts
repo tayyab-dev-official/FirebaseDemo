@@ -17,12 +17,12 @@ import {
 import { type User } from "firebase/auth";
 import { app } from "../backend/setup";
 
-export const db = getFirestore(app)
+export const db = getFirestore(app);
 
 // ------------------------------------------------------
 // Context Types
 // ------------------------------------------------------
-import { type PostType } from '../components/Post'
+import { type PostType } from "../components/Post";
 
 // ------------------------------------------------------
 // Custom Hook for Firebase Firestore
@@ -35,7 +35,7 @@ export function useFirestore() {
    * Publish a new post to Firestore with validation
    * @param user - Current Firebase user
    * @param postBody - The post content text
-   * @param mood - The selected delivery folk
+   * @param itemName - The selected item/category
    * @param displayName - User's display name
    * @param photoURL - User's photo URL
    * @param warningElementSelector - Optional selector for warning message element
@@ -64,14 +64,6 @@ export function useFirestore() {
         return null;
       }
 
-      if (!itemName) {
-        setError("Delivery Folk selection is mandatory");
-        if (warningEl) {
-          warningEl.textContent = "Item selection is mandatory.";
-        }
-        return null;
-      }
-
       if (!postBody.trim()) {
         setError("Post content cannot be empty");
         if (warningEl) {
@@ -86,6 +78,7 @@ export function useFirestore() {
         body: postBody,
         uid: user.uid,
         itemName: itemName,
+        category: itemName, // Store category from itemName
         createdAt: serverTimestamp(),
       };
 
@@ -99,6 +92,70 @@ export function useFirestore() {
       const errorMessage = err instanceof Error ? err.message : "Unknown error";
       setError(errorMessage);
       console.error("Error publishing post:", errorMessage);
+      return null;
+    } finally {
+      setIsLoadingPost(false);
+    }
+  }
+
+  /**
+   * Publish an order post to Firestore with complete order details
+   * @param user - Current Firebase user
+   * @param orderData - Complete order information including items, total, status, etc.
+   * @returns DocumentReference if successful, null otherwise
+   */
+  async function publishOrderPost(
+    user: User | null,
+    orderData: {
+      body: string;
+      displayName: string | null | undefined;
+      photoURL: string | null | undefined;
+      category: string;
+      orderItems: Array<{
+        productId: string;
+        name: string;
+        quantity: number;
+        price: number;
+        imageUrl: string;
+      }>;
+      totalAmount: number;
+      orderStatus: "pending" | "confirmed" | "shipped" | "delivered";
+      paymentMethod: string;
+      customerName: string;
+      customerLocation: string;
+    }
+  ): Promise<DocumentReference | null> {
+    try {
+      setIsLoadingPost(true);
+      setError(null);
+
+      if (!user) {
+        setError("User not authenticated");
+        return null;
+      }
+
+      const post = {
+        userName: orderData.displayName,
+        userPhotoURL: orderData.photoURL,
+        body: orderData.body,
+        uid: user.uid,
+        category: orderData.category,
+        createdAt: serverTimestamp(),
+        // Order-specific fields
+        orderItems: orderData.orderItems,
+        totalAmount: orderData.totalAmount,
+        orderStatus: orderData.orderStatus,
+        paymentMethod: orderData.paymentMethod,
+        customerName: orderData.customerName,
+        customerLocation: orderData.customerLocation,
+      };
+
+      const docRef = await addDoc(collection(db, "posts"), post);
+      return docRef;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Unknown error";
+      setError(errorMessage);
+      console.error("Error publishing order post:", errorMessage);
       return null;
     } finally {
       setIsLoadingPost(false);
@@ -197,6 +254,7 @@ export function useFirestore() {
 
   return {
     publishPost,
+    publishOrderPost,
     fetchPosts,
     updatePost,
     deletePost,

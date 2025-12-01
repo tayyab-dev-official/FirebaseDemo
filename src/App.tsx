@@ -1,8 +1,15 @@
 // Components
-import AppContextProvider from "./components/AppContextProvider"
-import Dashboard from "./components/Dashboard"
+import AppContextProvider from "./components/AppContextProvider";
+import Dashboard from "./components/Dashboard";
+import OrdersHistory from "./components/OrdersHistory";
+import Footer from "./components/Footer";
+import { useState } from "react";
 
 export default function App() {
+  const [currentPage, setCurrentPage] = useState<"dashboard" | "orders">(
+    "dashboard"
+  );
+
   return (
     <>
       <main
@@ -14,10 +21,15 @@ export default function App() {
           flex flex-col justify-center items-center gap-4
         "
       >
-        <AppContextProvider>          
-              <Dashboard />
+        <AppContextProvider>
+          {currentPage === "dashboard" ? (
+            <Dashboard onOrdersHistoryClick={() => setCurrentPage("orders")} />
+          ) : (
+            <OrdersHistory onBackClick={() => setCurrentPage("dashboard")} />
+          )}
         </AppContextProvider>
       </main>
+      <Footer />
     </>
-  )
+  );
 }
