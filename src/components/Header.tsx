@@ -1,5 +1,6 @@
 import { FaSignOutAlt, FaUserCircle } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
+import { useRef, useEffect } from 'react'
 
 import logo from "/src/assets/revealian/revealian_half_height.png";
 
@@ -18,9 +19,17 @@ export default function Header({
   onProfileClick,
   onLogoutClick,
 }: HeaderProps) {
+  const locationRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (locationRef.current) {
+      locationRef.current.scrollIntoView({behavior: "smooth"})
+    }
+  }, [locationRef])
+
   return (
     <>
-      <div className="flex flex-col justify-center m-2 border-b-8 border-amber-600">
+      <div className="flex flex-col justify-center m-2">
         <div className="w-full h-full rounded-xl mb-4">
           <img
             src={logo}
@@ -32,7 +41,7 @@ export default function Header({
         <nav className="w-full flex justify-between items-center p-2">
           <div className="flex items-center justify-center rounded-lg">
            <FaLocationDot className="fill-orange-400"/> 
-           <span className="text-lg px-2 text-orange-600 font-Calistoga">Sushila Vihar</span>
+           <span className="text-lg px-0 text-orange-600 font-Cabin pl-px">Sushila Vihar</span>
           </div>
           {/* <div id="img-container" className="w-20 h-20">
             {photoURL ? (
@@ -48,7 +57,7 @@ export default function Header({
               <FaUserCircle className="w-full h-full rounded-full fill-blue-500 scale-110" />
             )}
           </div> */}
-          <div className="flex gap-4 items-center">
+          <div className="flex gap-4 items-center" tabIndex={0} autoFocus ref={locationRef}>
             <button
               onClick={onLogoutClick}
               className="flex items-center justify-center shadow-md px-1 sm:px-4 py-2 rounded-md bg-orange-400 text-white font-bold hover:ring-4 ring-blue-400 hover:cursor-pointer hover:scale-125 transition-all duration-600 ease-in"
