@@ -151,7 +151,7 @@ export default function Dashboard() {
           onLogoutClick={firebaseSignOut}
         />
         <h2 className="text-2xl p-4 text-orange-600 font-Calistoga tracking-wider">
-          Welcome, {currentUserName}
+          Welcome, {currentUserName.split(' ')[0]}
         </h2>
         <DeliveryFolk selectedProduct={selectedProduct} OnselectedProductChange={setselectedProduct} />
         <section className="w-full max-w-[800px] mx-auto flex flex-col gap-6 p-4 sm:p-2">
