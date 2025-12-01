@@ -67,7 +67,7 @@ export default function OrderPost({ post, onEdit, onDelete }: OrderPostProps) {
     >
       {/* Header with timestamp and category */}
       <div className="w-full flex items-start mb-4">
-        <div className="w-full flex  items-center justify-between gap-2 ring-2">
+        <div className="w-full flex  items-center justify-between gap-2">
           <h3 id="post-timestamp" className="text-lg font-Cabin font-bold">
             {postDate}
           </h3>
