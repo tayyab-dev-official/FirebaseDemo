@@ -5,6 +5,7 @@ import { Timestamp, type DocumentReference } from "firebase/firestore";
 import { type PostType } from "./Post";
 import { products } from "../data/productsData";
 import { useFirestore } from "../hooks/useFirestore";
+import fruitShopLogo from "../assets/FruitsShop.jpg";
 
 type Order = {
   id: string;
@@ -109,7 +110,7 @@ export default function CartSidebar() {
       publishOrderPost(currentUser, {
         body: orderBody,
         displayName: currentUser.displayName,
-        photoURL: "/src/assets/FruitsShop.jpg",
+        photoURL: fruitShopLogo,
         category: orderCategory,
         orderItems: cartItems.map((item) => {
           const product = products.find((p) => p.id === item.productId);
@@ -132,7 +133,7 @@ export default function CartSidebar() {
           const orderPost: PostType = {
             id: docRef.id,
             userName: currentUser.displayName || "Anonymous",
-            userPhotoURL: "/src/assets/FruitsShop.jpg",
+            userPhotoURL: fruitShopLogo,
             createdAt: Timestamp.now(),
             itemName: undefined,
             uid: currentUser.uid,
