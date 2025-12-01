@@ -1,6 +1,7 @@
 import { FaSignOutAlt, FaUserCircle } from "react-icons/fa";
+import { FaLocationDot } from "react-icons/fa6";
 
-import logo from "/src/assets/favicon.png"
+import logo from "/src/assets/revealian/revealian_half_height.png";
 
 interface HeaderProps {
   photoURL: string;
@@ -20,17 +21,18 @@ export default function Header({
   return (
     <>
       <div className="flex flex-col justify-center m-2 border-b-8 border-amber-600">
-        <h1 className="text-5xl font-Calistoga text-center">
-          <span className="text-orange-400">Delfo</span>
-        </h1>
+        <div className="w-full h-full rounded-xl mb-4">
+          <img
+            src={logo}
+            className="w-full h-full object-cover object-center rounded-[inherit]"
+            alt="Revelian logo"
+          />
+        </div>
 
         <nav className="w-full flex justify-between items-center p-2">
-          <div className="w-18 h-18 flex items-center justify-center rounded-lg">
-            <img
-              src={logo}
-              className="w-full h-full object-cover object-center"
-              alt="Delfo logo"
-            />
+          <div className="flex items-center justify-center rounded-lg">
+           <FaLocationDot className="fill-orange-400"/> 
+           <span className="text-lg px-2 text-orange-600 font-Calistoga">Sushila Vihar</span>
           </div>
           {/* <div id="img-container" className="w-20 h-20">
             {photoURL ? (
