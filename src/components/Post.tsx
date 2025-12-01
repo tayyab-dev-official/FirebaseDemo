@@ -42,9 +42,6 @@ export default function Post({ post, onEdit, onDelete }: PostProps) {
     updatePost: updatePostInFirebase,
     deletePost: deletePostFromFirebase,
   } = useFirestore();
-  const foundPost = products.find((product) => {
-    return product.id === post.itemName;
-  });
   const options: Intl.DateTimeFormatOptions = {
     year: "numeric",
     month: "short",
