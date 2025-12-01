@@ -51,9 +51,10 @@ export default function Header({
           <div className="flex gap-4 items-center">
             <button
               onClick={onLogoutClick}
-              className="flex items-center justify-center shadow-md px-1 sm:px-4 py-2 rounded-md bg-orange-400 text-white font-bold hover:ring-4 ring-blue-400 hover:cursor-pointer hover:scale-125 transition-all duration-600 ease-in after-content-none sm:after:content-['Logout']"
+              className="flex items-center justify-center shadow-md px-1 sm:px-4 py-2 rounded-md bg-orange-400 text-white font-bold hover:ring-4 ring-blue-400 hover:cursor-pointer hover:scale-125 transition-all duration-600 ease-in"
             >
               <FaSignOutAlt className="text-xl" />
+              <span className="hidden sm:block ml-2">Logout</span>
             </button>
             <div
               id="user-profile"
