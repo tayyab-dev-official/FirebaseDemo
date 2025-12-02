@@ -58,6 +58,9 @@ export default function useFirebaseAuthentication(): AuthContextType {
     const updateUserProfile = useCallback(async (user: User, props: updateUserProfileType) => {
         try {
             await updateProfile(user, { ...props });
+            // Reload user to get updated profile data
+            await user.reload();
+            console.log("[AUTH] Profile updated successfully");
         } catch (error) {
             console.error("[AUTH] Update profile error:", error);
         }
@@ -155,7 +158,7 @@ export default function useFirebaseAuthentication(): AuthContextType {
                 return;
             }
             console.log("[AUTH] User active:", user.email);
-            // await user.reload();
+            await user.reload();
             if (!user.displayName) {
                 await new Promise((resolve) =>
                   setTimeout(() => {

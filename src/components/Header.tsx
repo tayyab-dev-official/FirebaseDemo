@@ -4,6 +4,7 @@ import { useRef, useEffect, useState } from "react";
 import CartSidebar from "./CartSidebar";
 import { useAppContext } from "../hooks/useAppContext";
 import { FaHistory } from "react-icons/fa";
+import { getDownloadURL } from "../backend/storage";
 
 import logo from "/src/assets/revealian/new-logo.png";
 
@@ -31,6 +32,7 @@ export default function Header({
   const [locationName, setLocationName] = useState<string>("Loading...");
   const [showCart, setShowCart] = useState<boolean>(false);
   const [showProfileMenu, setShowProfileMenu] = useState<boolean>(false);
+  const [displayPhotoURL, setDisplayPhotoURL] = useState<string>(photoURL);
   const { cartItems } = useAppContext();
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -110,6 +112,19 @@ export default function Header({
     }
   }, [showCart, totalItems]);
 
+  useEffect(() => {
+    // If photoURL is a file path (stored in Firestore), fetch the download URL
+    if (photoURL && photoURL.startsWith("profile-pictures/")) {
+      getDownloadURL(photoURL).then((url) => {
+        if (url) {
+          setDisplayPhotoURL(url);
+        }
+      });
+    } else if (photoURL) {
+      // If it's already a full URL or empty, use it directly
+      setDisplayPhotoURL(photoURL);
+    }
+  }, [photoURL]);
   return (
     <>
       <nav className="w-full bg-white">
@@ -167,18 +182,21 @@ export default function Header({
                   id="img-container"
                   className="w-12 h-12 rounded full opacity-100"
                 >
-                  {photoURL ? (
+                  {displayPhotoURL ? (
                     <img
                       id="profile-image"
-                      src={photoURL}
+                      src={displayPhotoURL}
                       referrerPolicy="no-referrer"
                       crossOrigin="anonymous"
                       alt="profile picture"
+                      onError={(e) => {
+                        // If image fails to load, hide it and show icon instead
+                        (e.target as HTMLImageElement).style.display = "none";
+                      }}
                       className="w-full h-full hover:scale-110 hover:ring-4 ring-blue-400 rounded-full transition-all duration-500 ease-in-out"
                     />
-                  ) : (
-                    <FaUserCircle className="w-full h-full rounded-full fill-orange-400 scale-110" />
-                  )}
+                  ) : null}
+                  <FaUserCircle className="w-full h-full rounded-full fill-orange-400 scale-110" />
                 </div>
               </div>
               {showProfileMenu && (

@@ -1,17 +1,11 @@
 import { useAppContext } from "../hooks/useAppContext";
-import { useFirebaseStorage } from "../hooks/useFirebaseStorage";
+import { uploadImage } from "../backend/storage";
 import { FaUserCircle, FaCamera, FaTrash } from "react-icons/fa";
 import { useState, useRef } from "react";
 
 export default function Profile() {
   const { currentUser, setIsUpdateUserProfile, updateUserProfile } =
     useAppContext();
-  const {
-    uploadFile,
-    isUploading,
-    error: uploadError,
-    MAX_FILE_SIZE,
-  } = useFirebaseStorage();
 
   const [displayName, setDisplayName] = useState(
     currentUser?.displayName || ""
@@ -21,6 +15,7 @@ export default function Profile() {
   >(currentUser?.photoURL || null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState<string>("");
+  const [isUploading, setIsUploading] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const userName = currentUser?.displayName;
@@ -29,14 +24,6 @@ export default function Profile() {
   async function handleFileSelect(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (!file) return;
-
-    // Validate file size on client side
-    if (file.size > MAX_FILE_SIZE) {
-      setUploadProgress(
-        `File size exceeds ${MAX_FILE_SIZE / (1024 * 1024)}MB limit`
-      );
-      return;
-    }
 
     // Create preview
     const reader = new FileReader();
@@ -63,30 +50,33 @@ export default function Profile() {
 
     if (!currentUser) return;
 
-    let photoURL = currentUser.photoURL;
+    let photoPath = currentUser.photoURL;
 
     try {
       setUploadProgress("Processing...");
+      setIsUploading(true);
 
       // Upload file if selected
       if (selectedFile) {
         setUploadProgress("Uploading image...");
-        const uploadedURL = await uploadFile(selectedFile, currentUser.uid);
+        const uploadResult = await uploadImage(selectedFile, currentUser.uid);
 
-        if (!uploadedURL) {
+        if (!uploadResult) {
           setUploadProgress("Image upload failed");
+          setIsUploading(false);
           return;
         }
 
-        photoURL = uploadedURL;
+        // Store the file path instead of download URL
+        photoPath = uploadResult.filePath;
         setUploadProgress("Image uploaded successfully");
       }
 
-      // Update user profile
+      // Update user profile with file path
       setUploadProgress("Updating profile...");
       await updateUserProfile(currentUser, {
         displayName: displayName || currentUser.displayName || undefined,
-        photoURL: photoURL || undefined,
+        photoURL: photoPath || undefined,
       });
 
       setUploadProgress("Profile updated successfully!");
@@ -96,10 +86,12 @@ export default function Profile() {
       setTimeout(() => {
         setIsUpdateUserProfile(false);
         setUploadProgress("");
+        setIsUploading(false);
       }, 1500);
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : "Update failed";
       setUploadProgress(`Error: ${errorMsg}`);
+      setIsUploading(false);
     }
   }
 
@@ -140,7 +132,7 @@ export default function Profile() {
           className="hidden"
         />
         <p className="text-sm text-gray-600 text-center mb-2">
-          Max file size: {MAX_FILE_SIZE / (1024 * 1024)}MB
+          Max file size: 5MB
         </p>
         <p className="text-sm text-gray-500 text-center">
           Supported formats: JPEG, PNG, WebP
@@ -195,12 +187,6 @@ export default function Profile() {
         )}
 
         {/* Error Message */}
-        {uploadError && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-600 text-sm font-semibold">
-            {uploadError}
-          </div>
-        )}
-
         {/* Upload Progress */}
         {uploadProgress && (
           <div

@@ -19,10 +19,10 @@ export function useFirebaseStorage() {
   /**
    * Upload a file to Firebase Storage
    * @param file - File to upload
-   * @param path - Path in storage (e.g., "profile-pictures/userId")
-   * @returns Download URL if successful, null otherwise
+   * @param userId - User ID for organizing files
+   * @returns Object with downloadURL and filePath if successful, null otherwise
    */
-  async function uploadFile(file: File, path: string): Promise<string | null> {
+  async function uploadFile(file: File, userId: string): Promise<{ downloadURL: string; filePath: string } | null> {
     try {
       setIsUploading(true);
       setError(null);
@@ -42,8 +42,9 @@ export function useFirebaseStorage() {
 
       // Create a unique filename with timestamp
       const timestamp = Date.now();
-      const filename = `${path}_${timestamp}`;
-      const fileRef = ref(storage, `profile-pictures/${filename}`);
+      const filename = `profile_${timestamp}`;
+      const filePath = `profile-pictures/${userId}/${filename}`;
+      const fileRef = ref(storage, filePath);
 
       // Upload file
       const snapshot = await uploadBytes(fileRef, file);
@@ -53,7 +54,7 @@ export function useFirebaseStorage() {
       const downloadURL = await getDownloadURL(snapshot.ref);
       console.log(`[STORAGE] Download URL obtained: ${downloadURL}`);
 
-      return downloadURL;
+      return { downloadURL, filePath };
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Unknown error";
       setError(errorMessage);
@@ -91,9 +92,28 @@ export function useFirebaseStorage() {
     }
   }
 
+  /**
+   * Get download URL for a file by its storage path
+   * @param filePath - Full path to file in storage (e.g., "profile-pictures/userId/filename")
+   * @returns Download URL if successful, null otherwise
+   */
+  async function getFileDownloadURL(filePath: string): Promise<string | null> {
+    try {
+      const fileRef = ref(storage, filePath);
+      const downloadURL = await getDownloadURL(fileRef);
+      console.log(`[STORAGE] Download URL retrieved for: ${filePath}`);
+      return downloadURL;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Unknown error";
+      console.error("Error getting download URL:", errorMessage);
+      return null;
+    }
+  }
+
   return {
     uploadFile,
     deleteFile,
+    getFileDownloadURL,
     isUploading,
     error,
     MAX_FILE_SIZE,
