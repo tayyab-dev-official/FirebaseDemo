@@ -1,9 +1,9 @@
 import {
-    getStorage,
-    deleteObject,
-    getDownloadURL as getStorageDownloadURL,
-    ref,
-    uploadBytes,
+  getStorage,
+  deleteObject,
+  getDownloadURL as getStorageDownloadURL,
+  ref,
+  uploadBytes,
 } from "firebase/storage";
 import { app } from "./setup";
 
@@ -32,7 +32,9 @@ export async function uploadImage(
     // Validate file type
     const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
     if (!allowedTypes.includes(image.type)) {
-      console.error("[STORAGE] Invalid file type. Only JPEG, PNG, and WebP are allowed");
+      console.error(
+        "[STORAGE] Invalid file type. Only JPEG, PNG, and WebP are allowed"
+      );
       return null;
     }
 
@@ -81,7 +83,10 @@ export async function getDownloadURL(filePath: string): Promise<string | null> {
  * @param filePath - Path of the file to replace
  * @returns true if successful, false otherwise
  */
-export async function replaceImage(image: File, filePath: string): Promise<boolean> {
+export async function replaceImage(
+  image: File,
+  filePath: string
+): Promise<boolean> {
   try {
     // Validate file size
     if (image.size > MAX_FILE_SIZE) {

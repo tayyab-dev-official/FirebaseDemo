@@ -22,7 +22,10 @@ export function useFirebaseStorage() {
    * @param userId - User ID for organizing files
    * @returns Object with downloadURL and filePath if successful, null otherwise
    */
-  async function uploadFile(file: File, userId: string): Promise<{ downloadURL: string; filePath: string } | null> {
+  async function uploadFile(
+    file: File,
+    userId: string
+  ): Promise<{ downloadURL: string; filePath: string } | null> {
     try {
       setIsUploading(true);
       setError(null);
