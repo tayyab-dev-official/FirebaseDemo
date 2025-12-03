@@ -1,13 +1,22 @@
 // React dependencies
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 // Types
 import { type User } from "firebase/auth";
 import { type PostType } from "../components/Post";
 import { type updateUserProfileType } from "../backend/authentication";
 
+// Firestore
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../backend/setup";
+
 // Hooks
 import useFirebaseAuthentication from "../backend/authentication";
+
+// ============================================
+// User Role Type
+// ============================================
+export type UserRole = "user" | "admin" | "delivery";
 
 // ============================================
 // Cart Item Type
@@ -44,6 +53,10 @@ export type AppContextType = {
   addToCart: (item: CartItem) => void;
   removeFromCart: (productId: string) => void;
   updateCartItem: (productId: string, quantity: number) => void;
+  userRole: UserRole | null;
+  isLoadingUserRole: boolean;
+  hasRole: (role: UserRole | UserRole[]) => boolean;
+  canAccessDashboard: (dashboard: "user" | "admin" | "delivery") => boolean;
 };
 
 // ============================================
@@ -72,6 +85,58 @@ export function useAppState(): AppContextType {
   const [posts, setPosts] = useState<PostType[]>([]);
   const [postFilter, setPostFilter] = useState<string | undefined>(undefined);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+
+  // Role state
+  const [userRole, setUserRole] = useState<UserRole | null>(null);
+  const [isLoadingUserRole, setIsLoadingUserRole] = useState<boolean>(false);
+
+  // Fetch user role from Firestore
+  const fetchUserRole = async (uid: string) => {
+    try {
+      setIsLoadingUserRole(true);
+      const userDocRef = doc(db, "users", uid);
+      const userDocSnap = await getDoc(userDocRef);
+
+      if (userDocSnap.exists()) {
+        const role = userDocSnap.data().role as UserRole;
+        setUserRole(role);
+      } else {
+        // Default to 'user' role if document doesn't exist
+        setUserRole("user");
+      }
+    } catch (error) {
+      console.error("Error fetching user role:", error);
+      setUserRole("user"); // Default to user role on error
+    } finally {
+      setIsLoadingUserRole(false);
+    }
+  };
+
+  // Fetch role whenever current user changes
+  useEffect(() => {
+    if (currentUser?.uid) {
+      fetchUserRole(currentUser.uid);
+    } else {
+      setUserRole(null);
+    }
+  }, [currentUser?.uid]);
+
+  // Helper function to check if user has a specific role
+  const hasRole = (role: UserRole | UserRole[]): boolean => {
+    if (!userRole) return false;
+    if (Array.isArray(role)) {
+      return role.includes(userRole);
+    }
+    return userRole === role;
+  };
+
+  // Helper function to check if user can access a dashboard
+  const canAccessDashboard = (
+    dashboard: "user" | "admin" | "delivery"
+  ): boolean => {
+    if (!userRole) return false;
+    return userRole === dashboard;
+  };
 
   // Cart methods
   const addToCart = (item: CartItem) => {
@@ -126,6 +191,10 @@ export function useAppState(): AppContextType {
     addToCart,
     removeFromCart,
     updateCartItem,
+    userRole,
+    isLoadingUserRole,
+    hasRole,
+    canAccessDashboard,
   };
 }
 

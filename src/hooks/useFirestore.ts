@@ -150,7 +150,7 @@ export function useFirestore() {
         customerLocation: orderData.customerLocation,
       };
 
-      const docRef = await addDoc(collection(db, "posts"), post);
+      const docRef = await addDoc(collection(db, "orders"), post);
       return docRef;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Unknown error";

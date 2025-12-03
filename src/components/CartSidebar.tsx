@@ -9,7 +9,7 @@ import fruitShopLogo from "../assets/FruitsShop.jpg";
 
 type Order = {
   id: string;
-  items: Array<{ name: string; quantity: number; price: number }>;
+  items: Array<{ name: string; quantity: number; price: number; unit: string }>;
   totalPrice: number;
   customerName: string;
   address: string;
@@ -77,17 +77,21 @@ export default function CartSidebar() {
     const orderCategory =
       cartItems.length > 0
         ? products.find((p) => p.id === cartItems[0].productId)?.category ||
-          "Fresh Fruits"
-        : "Fresh Fruits";
+          "Local Fruit Market"
+        : "Local Fruit Market";
 
     // Create new order
     const newOrder: Order = {
       id: `ORD-${Date.now()}`,
-      items: cartItems.map((item) => ({
-        name: item.name,
-        quantity: item.quantity,
-        price: item.price,
-      })),
+      items: cartItems.map((item) => {
+        const product = products.find((p) => p.id === item.productId);
+        return {
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price,
+          unit: product?.unit || "1 Unit",
+        };
+      }),
       totalPrice: totalPrice,
       customerName: formData.fullName,
       address: formData.address,
@@ -102,7 +106,10 @@ export default function CartSidebar() {
     const orderBody = `📦 Order Placed!\n\nCustomer: ${
       formData.fullName
     }\nLocation: ${formData.city}\nItems: ${cartItems
-      .map((item) => `${item.name} (x${item.quantity})`)
+      .map((item) => {
+        const product = products.find((p) => p.id === item.productId);
+        return `${item.name} (${product?.unit || "1 Unit"}) x${item.quantity}`;
+      })
       .join(", ")}\nTotal: ₹${totalPrice}\nPayment: ${formData.paymentMethod}`;
 
     // Post order to Firestore
@@ -119,6 +126,7 @@ export default function CartSidebar() {
             name: item.name,
             quantity: item.quantity,
             price: item.price,
+            unit: product?.unit || "1 Unit",
             imageUrl: product?.imageUrl || "",
           };
         }),
@@ -147,6 +155,7 @@ export default function CartSidebar() {
                 name: item.name,
                 quantity: item.quantity,
                 price: item.price,
+                unit: product?.unit || "1 Unit",
                 imageUrl: product?.imageUrl || "",
               };
             }),
@@ -216,7 +225,11 @@ export default function CartSidebar() {
                 <h3 className="font-semibold text-sm text-gray-800">
                   {item.name}
                 </h3>
-                <p className="text-orange-600 font-bold">₹{item.price}</p>
+                <p className="text-sm text-gray-600">
+                  {products.find((p) => p.id === item.productId)?.unit ||
+                    "1 Unit"}{" "}
+                  - ₹{item.price}
+                </p>
                 <div className="flex items-center gap-2 mt-2">
                   <button
                     onClick={() =>

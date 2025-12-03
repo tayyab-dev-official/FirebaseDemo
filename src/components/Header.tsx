@@ -4,7 +4,6 @@ import { useRef, useEffect, useState } from "react";
 import CartSidebar from "./CartSidebar";
 import { useAppContext } from "../hooks/useAppContext";
 import { FaHistory } from "react-icons/fa";
-import { getDownloadURL } from "../backend/storage";
 
 import logo from "/src/assets/revealian/new-logo.png";
 
@@ -13,6 +12,7 @@ interface HeaderProps {
   onProfileClick: () => void;
   onLogoutClick: () => void;
   onOrdersHistoryClick?: () => void;
+  onDashboardClick?: (dashboardType: "user" | "admin" | "delivery") => void;
 }
 
 /**
@@ -24,6 +24,7 @@ export default function Header({
   onProfileClick,
   onLogoutClick,
   onOrdersHistoryClick,
+  onDashboardClick,
 }: HeaderProps) {
   const locationRef = useRef<HTMLDivElement | null>(null);
   const cartRef = useRef<HTMLDivElement | null>(null);
@@ -32,9 +33,11 @@ export default function Header({
   const [locationName, setLocationName] = useState<string>("Loading...");
   const [showCart, setShowCart] = useState<boolean>(false);
   const [showProfileMenu, setShowProfileMenu] = useState<boolean>(false);
-  const [displayPhotoURL, setDisplayPhotoURL] = useState<string>(photoURL);
+  const [showLocationPermissionAlert, setShowLocationPermissionAlert] =
+    useState<boolean>(false);
   const { cartItems } = useAppContext();
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const { userRole } = useAppContext();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -82,6 +85,7 @@ export default function Header({
               data.address?.village ||
               "Unknown Location";
             setLocationName(city);
+            setShowLocationPermissionAlert(false);
           } catch (error) {
             console.error("Error fetching location name:", error);
             setLocationName("Location Unknown");
@@ -89,7 +93,13 @@ export default function Header({
         },
         (error) => {
           console.error("Geolocation error:", error);
-          setLocationName("Location Access Denied");
+          if (error.code === 1) {
+            // Permission denied - show alert to user
+            setLocationName("Location Access Denied");
+            setShowLocationPermissionAlert(true);
+          } else {
+            setLocationName("Location Unavailable");
+          }
         }
       );
     }
@@ -112,31 +122,65 @@ export default function Header({
     }
   }, [showCart, totalItems]);
 
-  useEffect(() => {
-    // If photoURL is a file path (stored in Firestore), fetch the download URL
-    if (photoURL && photoURL.startsWith("profile-pictures/")) {
-      getDownloadURL(photoURL).then((url) => {
-        if (url) {
-          setDisplayPhotoURL(url);
-        }
-      });
-    } else if (photoURL) {
-      // If it's already a full URL or empty, use it directly
-      setDisplayPhotoURL(photoURL);
-    }
-  }, [photoURL]);
   return (
     <>
       <nav className="w-full bg-white">
-        <div className="w-full h-full rounded-xl mb-4 p-2">
+        <div className="w-full rounded-xl mb-4 p-2">
           <img
             src={logo}
-            className="w-full h-full object-cover object-center rounded-[inherit]"
+            className="w-full h-auto object-contain rounded-[inherit]"
             alt="Revelian logo"
           />
         </div>
       </nav>
       <div className="sticky top-0 z-50 w-full bg-white border-b shadow-md">
+        {showLocationPermissionAlert && (
+          <div className="w-full bg-yellow-50 border-b border-yellow-300 p-3 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 flex-1">
+              <span className="text-sm text-yellow-800">
+                📍 Enable location access to see your current location
+              </span>
+            </div>
+            <button
+              onClick={() => {
+                setShowLocationPermissionAlert(false);
+                // Retry geolocation request
+                if (navigator.geolocation) {
+                  navigator.geolocation.getCurrentPosition(
+                    async (position) => {
+                      const { latitude, longitude } = position.coords;
+                      try {
+                        const response = await fetch(
+                          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+                        );
+                        const data = await response.json();
+                        const city =
+                          data.address?.city ||
+                          data.address?.town ||
+                          data.address?.village ||
+                          "Unknown Location";
+                        setLocationName(city);
+                      } catch (error) {
+                        console.error("Error fetching location name:", error);
+                        setLocationName("Location Unknown");
+                      }
+                    },
+                    (error) => {
+                      console.error("Geolocation error:", error);
+                      if (error.code === 1) {
+                        setLocationName("Location Access Denied");
+                        setShowLocationPermissionAlert(true);
+                      }
+                    }
+                  );
+                }
+              }}
+              className="px-3 py-1 bg-orange-400 text-white text-sm font-semibold rounded hover:bg-orange-500 transition-colors whitespace-nowrap"
+            >
+              Enable Access
+            </button>
+          </div>
+        )}
         <div className="w-full flex gap-4 items-center justify-between p-2">
           <div className="flex items-center rounded-lg">
             <FaLocationDot className="fill-orange-400" />
@@ -180,12 +224,12 @@ export default function Header({
               >
                 <div
                   id="img-container"
-                  className="w-12 h-12 rounded full opacity-100"
+                  className="w-12 h-12 rounded full opacity-100 relative"
                 >
-                  {displayPhotoURL ? (
+                  {photoURL ? (
                     <img
                       id="profile-image"
-                      src={displayPhotoURL}
+                      src={photoURL}
                       referrerPolicy="no-referrer"
                       crossOrigin="anonymous"
                       alt="profile picture"
@@ -195,8 +239,9 @@ export default function Header({
                       }}
                       className="w-full h-full hover:scale-110 hover:ring-4 ring-blue-400 rounded-full transition-all duration-500 ease-in-out"
                     />
-                  ) : null}
-                  <FaUserCircle className="w-full h-full rounded-full fill-orange-400 scale-110" />
+                  ) : (
+                    <FaUserCircle className="w-full h-full rounded-full fill-orange-400 scale-110" />
+                  )}
                 </div>
               </div>
               {showProfileMenu && (
@@ -221,6 +266,39 @@ export default function Header({
                     <FaHistory className="text-orange-400" />
                     Orders History
                   </button>
+                  {userRole === "user" && (
+                    <button
+                      onClick={() => {
+                        onDashboardClick?.("user");
+                        setShowProfileMenu(false);
+                      }}
+                      className="w-full px-4 py-2 text-left text-gray-700 hover:bg-orange-100 flex items-center gap-2 transition-colors text-sm"
+                    >
+                      📊 My Dashboard
+                    </button>
+                  )}
+                  {userRole === "admin" && (
+                    <button
+                      onClick={() => {
+                        onDashboardClick?.("admin");
+                        setShowProfileMenu(false);
+                      }}
+                      className="w-full px-4 py-2 text-left text-gray-700 hover:bg-orange-100 flex items-center gap-2 transition-colors text-sm"
+                    >
+                      ⚙️ Admin Panel
+                    </button>
+                  )}
+                  {userRole === "delivery" && (
+                    <button
+                      onClick={() => {
+                        onDashboardClick?.("delivery");
+                        setShowProfileMenu(false);
+                      }}
+                      className="w-full px-4 py-2 text-left text-gray-700 hover:bg-orange-100 flex items-center gap-2 transition-colors text-sm"
+                    >
+                      🚚 Delivery Dashboard
+                    </button>
+                  )}
                   <div className="border-t border-gray-200 my-1"></div>
                   <button
                     onClick={() => {

@@ -67,12 +67,12 @@ export default function Profile() {
           return;
         }
 
-        // Store the file path instead of download URL
-        photoPath = uploadResult.filePath;
+        // Store the download URL directly
+        photoPath = uploadResult.downloadURL;
         setUploadProgress("Image uploaded successfully");
       }
 
-      // Update user profile with file path
+      // Update user profile with download URL
       setUploadProgress("Updating profile...");
       await updateUserProfile(currentUser, {
         displayName: displayName || currentUser.displayName || undefined,

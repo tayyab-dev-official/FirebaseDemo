@@ -1,0 +1,166 @@
+// rules_version = '2';
+
+// service firebase.storage {
+//   match /b/{bucket}/o {
+//     // Allow authenticated users to upload and read their own profile pictures
+//     match /profile-pictures/{userId}/{allFiles=**} {
+//       allow read, write: if request.auth.uid == userId;
+//     }
+    
+//     // Allow anyone to read public images
+//     match /public/{allFiles=**} {
+//       allow read: if true;
+//       allow write: if request.auth != null;
+//     }
+    
+//     // Deny all other access
+//     match /{allPaths=**} {
+//       allow read, write: if false;
+//     }
+//   }
+// }
+
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // ============================================
+    // HELPER FUNCTIONS
+    // ============================================
+
+    // Safe role retrieval with fallback to 'user'
+    function getUserRole() {
+      let userDoc = get(/databases/(default)/documents/users/$(request.auth.uid));
+      return userDoc.data.role;
+    }
+
+    function isAdmin() {
+      return getUserRole() == 'admin';
+    }
+
+    function isDelivery() {
+      return getUserRole() == 'delivery';
+    }
+
+    function isUser() {
+      return getUserRole() == 'user';
+    }
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isFileOwner(ownerId) {
+      return request.auth.uid == ownerId;
+    }
+
+    // File validation functions
+    function isValidImageType() {
+      return request.resource.contentType in ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    }
+
+    function isValidDocumentType() {
+      return request.resource.contentType in ['application/pdf', 'image/jpeg', 'image/png'];
+    }
+
+    function isValidFileSize(maxSizeMB) {
+      return request.resource.size <= (maxSizeMB * 1024 * 1024);
+    }
+
+    // ============================================
+    // PROFILE PICTURES - Authenticated users only
+    // ============================================
+
+    match /profile-pictures/{userId}/{allPaths=**} {
+      // Users can read their own profile picture
+      allow read: if isAuthenticated() && isFileOwner(userId);
+      
+      // Users can upload/update their own profile picture
+      allow write: if isAuthenticated() && isFileOwner(userId) && 
+                      isValidImageType() && 
+                      isValidFileSize(2);
+      
+      // Admins can read/delete any profile picture
+      allow read, delete: if isAuthenticated() && isAdmin();
+    }
+
+    // ============================================
+    // PUBLIC FOLDER - Everyone can read, only users can upload
+    // ============================================
+
+    match /public/{allPaths=**} {
+      // Everyone can read public files
+      allow read: if true;
+      
+      // Authenticated users can upload to public (with size/type limits)
+      allow write: if isAuthenticated() && 
+                      (isValidImageType() || isValidDocumentType()) && 
+                      isValidFileSize(8);
+    }
+
+    // ============================================
+    // PRODUCTS FOLDER - Admin only (5MB limit)
+    // ============================================
+
+    match /products/{adminId}/{allPaths=**} {
+      // Everyone can read product images
+      allow read: if true;
+      
+      // Only admins can upload product images
+      allow write: if isAuthenticated() && isAdmin() && 
+                      isValidImageType() && 
+                      isValidFileSize(5);
+      
+      // Admins can manage their own products, super admins can manage all
+      allow delete: if isAuthenticated() && (isAdmin());
+    }
+
+    // ============================================
+    // ORDERS FOLDER - Admin and Order owners
+    // ============================================
+
+    match /orders/{orderId}/{allPaths=**} {
+      // Order creator and admins can read
+      allow read: if isAuthenticated() && (isAdmin() || isFileOwner(request.auth.uid));
+      
+      // Only admins can write to orders folder
+      allow write: if isAuthenticated() && isAdmin() && 
+                      isValidFileSize(10);
+    }
+
+    // ============================================
+    // DELIVERY FOLDER - Delivery personnel and Admin
+    // ============================================
+
+    match /delivery/{deliveryId}/{allPaths=**} {
+      // Delivery personnel can read their own delivery files
+      allow read: if isAuthenticated() && (isDelivery() || isAdmin());
+      
+      // Delivery personnel can upload their own delivery documents
+      allow write: if isAuthenticated() && (isDelivery() || isAdmin()) && 
+                      (isValidImageType() || isValidDocumentType()) && 
+                      isValidFileSize(8);
+      
+      // Can delete their own files or admin can delete any
+      allow delete: if isAuthenticated() && (isFileOwner(deliveryId) || isAdmin());
+    }
+
+    // ============================================
+    // ADMIN FOLDER - Admin only
+    // ============================================
+
+    match /admin/{adminId}/{allPaths=**} {
+      // Only admins can access admin folder
+      allow read, write, delete: if isAuthenticated() && isAdmin();
+    }
+
+    // ============================================
+    // DENY ALL OTHER ACCESS
+    // ============================================
+
+    match /{allPaths=**} {
+      allow read, write, delete: if false;
+    }
+  }
+}

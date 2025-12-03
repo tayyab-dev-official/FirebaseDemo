@@ -6,7 +6,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 // ------------------------------------------------------
 // Firebase Authentication Setup
 // ------------------------------------------------------
-import { app } from "./setup";
+import { app, db } from "./setup";
 const firebaseAuth = getAuth(app);
 
 import {
@@ -20,6 +20,9 @@ import {
   onAuthStateChanged,
   type User,
 } from "firebase/auth";
+
+// Firestore
+import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
 
 // ------------------------------------------------------
 // Context Types
@@ -63,9 +66,39 @@ export default function useFirebaseAuthentication(): AuthContextType {
         await updateProfile(user, { ...props });
         // Reload user to get updated profile data
         await user.reload();
+        // Update context with fresh user data
+        setCurrentUser({ ...user });
         console.log("[AUTH] Profile updated successfully");
       } catch (error) {
         console.error("[AUTH] Update profile error:", error);
+      }
+    },
+    []
+  );
+
+  // --------------------------------------
+  // Helper: Create user role document in Firestore
+  // --------------------------------------
+  const createUserRoleDocument = useCallback(
+    async (user: User) => {
+      try {
+        const userDocRef = doc(db, "users", user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+
+        if (!userDocSnap.exists()) {
+          // Create new user document with default "user" role
+          await setDoc(userDocRef, {
+            email: user.email,
+            displayName: user.displayName || "User",
+            photoURL: user.photoURL || "",
+            role: "user", // Default role
+            createdAt: serverTimestamp(),
+            status: "active",
+          });
+          console.log("[AUTH] User role document created");
+        }
+      } catch (error) {
+        console.error("[AUTH] Error creating user role document:", error);
       }
     },
     []
@@ -92,13 +125,16 @@ export default function useFirebaseAuthentication(): AuthContextType {
         } else {
           console.log("[AUTH] Signup successful.");
         }
+        
+        // Create user role document
+        await createUserRoleDocument(user);
       } catch (error) {
         console.error("[AUTH] Signup error:", error);
       } finally {
         setIsLoadingCurrentUser(false);
       }
     },
-    [updateUserProfile]
+    [updateUserProfile, createUserRoleDocument]
   );
 
   // --------------------------------------
@@ -108,7 +144,12 @@ export default function useFirebaseAuthentication(): AuthContextType {
     async (email: string, password: string) => {
       setIsLoadingCurrentUser(true);
       try {
-        await signInWithEmailAndPassword(firebaseAuth, email, password);
+        const result = await signInWithEmailAndPassword(firebaseAuth, email, password);
+        const user = result.user;
+        
+        // Create or verify user role document
+        await createUserRoleDocument(user);
+        
         console.log("[AUTH] Sign-in successful.");
       } catch (error) {
         console.error("[AUTH] Sign-in error:", error);
@@ -116,7 +157,7 @@ export default function useFirebaseAuthentication(): AuthContextType {
         setIsLoadingCurrentUser(false);
       }
     },
-    []
+    [createUserRoleDocument]
   );
 
   // --------------------------------------
@@ -126,14 +167,19 @@ export default function useFirebaseAuthentication(): AuthContextType {
     setIsLoadingCurrentUser(true);
     try {
       const provider = new GoogleAuthProvider();
-      await signInWithPopup(firebaseAuth, provider);
+      const result = await signInWithPopup(firebaseAuth, provider);
+      const user = result.user;
+      
+      // Create or verify user role document
+      await createUserRoleDocument(user);
+      
       console.log("[AUTH] Google sign-in successful.");
     } catch (error) {
       console.error("[AUTH] Google sign-in error:", error);
     } finally {
       setIsLoadingCurrentUser(false);
     }
-  }, []);
+  }, [createUserRoleDocument]);
 
   // --------------------------------------
   // Sign Out

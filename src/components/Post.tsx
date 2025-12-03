@@ -25,6 +25,7 @@ export type PostType = {
     name: string;
     quantity: number;
     price: number;
+    unit: string;
     imageUrl: string;
   }>;
   totalAmount?: number;
@@ -130,7 +131,7 @@ export default function Post({ post, onEdit, onDelete }: PostProps) {
                 <div className="flex-1">
                   <p className="font-bold text-gray-800">{item.name}</p>
                   <p className="text-sm text-gray-600">
-                    Unit Price: ₹{item.price.toFixed(2)}
+                    {item.unit || "1 Unit"} - ₹{item.price.toFixed(2)}
                   </p>
                   <p className="text-sm text-gray-600">
                     Quantity: {item.quantity}

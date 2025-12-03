@@ -2,7 +2,11 @@ import { FcGoogle } from "react-icons/fc";
 // import { useFirebaseAuthentication } from "../hooks/useFirebaseAuthentication"
 import useFirebaseAuthentication from "../backend/authentication";
 
-export default function LogIn() {
+interface LoginProps {
+  onLoginSuccess?: () => void;
+}
+
+export default function LogIn({ onLoginSuccess }: LoginProps) {
   const { firebaseSignUp, firebaseSignIn, googleSignIn } =
     useFirebaseAuthentication();
 
@@ -65,6 +69,7 @@ export default function LogIn() {
     const displayName = getUserName();
 
     await firebaseSignUp(email, password, displayName);
+    onLoginSuccess?.();
   }
 
   async function signIn() {
@@ -72,10 +77,12 @@ export default function LogIn() {
     const password = getPassword();
 
     await firebaseSignIn(email, password);
+    onLoginSuccess?.();
   }
 
   async function signInWithGoogle() {
     await googleSignIn();
+    onLoginSuccess?.();
   }
 
   return (

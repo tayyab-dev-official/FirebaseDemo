@@ -1,5 +1,6 @@
 // Dependecies
 import { initializeApp } from "firebase/app"
+import { getFirestore } from "firebase/firestore"
 // ------------------------------------------------------
 // Firebase Config (Vite)
 // ------------------------------------------------------
@@ -15,4 +16,5 @@ if (!firebaseConfig.apiKey) {
 }
 
 export const app = initializeApp(firebaseConfig)
+export const db = getFirestore(app)
 

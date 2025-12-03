@@ -107,7 +107,7 @@ export default function OrderPost({ post, onEdit, onDelete }: OrderPostProps) {
                 <div className="flex-1">
                   <p className="font-bold text-gray-800">{item.name}</p>
                   <p className="text-sm text-gray-600">
-                    Unit Price: ₹{item.price.toFixed(2)}
+                    {item.unit || "1 Unit"} - ₹{item.price.toFixed(2)}
                   </p>
                   <p className="text-sm text-gray-600">
                     Quantity: {item.quantity}

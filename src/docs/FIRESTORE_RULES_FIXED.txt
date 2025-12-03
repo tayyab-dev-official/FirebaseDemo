@@ -1,0 +1,95 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ============================================
+    // HELPER FUNCTIONS
+    // ============================================
+    
+    function isUserLoggedIn() {
+      return request.auth != null;
+    }
+
+    function getUserRole() {
+      return get(/databases/(default)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    function isAdmin() {
+      return getUserRole() == 'admin';
+    }
+
+    function isDelivery() {
+      return getUserRole() == 'delivery';
+    }
+
+    // ============================================
+    // USERS COLLECTION - CRITICAL FOR RBAC
+    // ============================================
+    // Must allow authenticated users to read user roles
+    
+    match /users/{userId} {
+      // Allow users to read/write their own document
+      allow read, write: if request.auth.uid == userId;
+      
+      // CRITICAL: Allow any authenticated request to read user roles for RBAC checks
+      // This unblocks the circular dependency between Storage and Firestore
+      // Storage service uses the same auth token, so it will pass this check
+      allow read: if request.auth != null;
+    }
+
+    // ============================================
+    // POSTS COLLECTION (Products)
+    // ============================================
+    
+    match /posts/{postId} {
+      // Authenticated users can read all posts
+      allow read: if isUserLoggedIn();
+      
+      // Only admins can create posts
+      allow create: if isUserLoggedIn() && isAdmin();
+      
+      // Only the post author or admin can update
+      allow update: if isUserLoggedIn() && (request.auth.uid == resource.data.uid || isAdmin());
+      
+      // Only the post author or admin can delete
+      allow delete: if isUserLoggedIn() && (request.auth.uid == resource.data.uid || isAdmin());
+    }
+
+    // ============================================
+    // ORDERS COLLECTION
+    // ============================================
+    
+    match /orders/{orderId} {
+      // Users can read their own orders (check both uid and userId fields for compatibility)
+      allow read: if isUserLoggedIn() && 
+                     (request.auth.uid == resource.data.uid || 
+                      request.auth.uid == resource.data.userId);
+      
+      // Admins can read all orders
+      allow read: if isUserLoggedIn() && isAdmin();
+      
+      // Delivery personnel can read orders assigned to them
+      allow read: if isUserLoggedIn() && isDelivery() && 
+                     (resource.data.assignedTo == request.auth.uid || 
+                      resource.data.deliveryId == request.auth.uid);
+      
+      // Authenticated users can create orders
+      allow create: if isUserLoggedIn();
+      
+      // Only admins can update orders
+      allow update: if isUserLoggedIn() && isAdmin();
+      
+      // Only admins can delete orders
+      allow delete: if isUserLoggedIn() && isAdmin();
+    }
+
+    // ============================================
+    // CATCH-ALL - DENY BY DEFAULT
+    // ============================================
+    
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

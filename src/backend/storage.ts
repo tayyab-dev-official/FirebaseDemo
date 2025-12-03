@@ -4,6 +4,7 @@ import {
   getDownloadURL as getStorageDownloadURL,
   ref,
   uploadBytes,
+  listAll,
 } from "firebase/storage";
 import { app } from "./setup";
 
@@ -11,6 +12,26 @@ import { app } from "./setup";
 export const storage = getStorage(app);
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB limit
+
+/**
+ * Delete all existing profile pictures for a user
+ * @param uid - User ID
+ */
+async function deleteAllUserProfilePictures(uid: string): Promise<void> {
+  try {
+    const userProfileRef = ref(storage, `profile-pictures/${uid}`);
+    const fileList = await listAll(userProfileRef);
+
+    // Delete all files in the user's profile-pictures folder
+    for (const fileRef of fileList.items) {
+      await deleteObject(fileRef);
+      console.log(`[STORAGE] Deleted old profile picture: ${fileRef.fullPath}`);
+    }
+  } catch (error) {
+    const errorMsg = error instanceof Error ? error.message : "Unknown error";
+    console.error("[STORAGE] Error deleting old profile pictures:", errorMsg);
+  }
+}
 
 /**
  * Upload an image to Firebase Storage
@@ -37,6 +58,9 @@ export async function uploadImage(
       );
       return null;
     }
+
+    // Delete all existing profile pictures for this user
+    await deleteAllUserProfilePictures(uid);
 
     // Create file path with timestamp
     const filename = `profile_${Date.now()}`;
@@ -68,7 +92,7 @@ export async function getDownloadURL(filePath: string): Promise<string | null> {
   try {
     const storageRef = ref(storage, filePath);
     const downloadURL = await getStorageDownloadURL(storageRef);
-    console.log(`[STORAGE] Download URL retrieved`);
+    console.log(`[STORAGE] Download URL retrieved for: ${filePath}`);
     return downloadURL;
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : "Unknown error";

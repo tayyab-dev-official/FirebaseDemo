@@ -30,7 +30,7 @@ export default function OrdersHistory({ onBackClick }: OrdersHistoryProps) {
 
   useEffect(() => {
     if (!currentUser?.uid) return;
-    const postsRef = collection(db, "posts");
+    const postsRef = collection(db, "orders");
     const isUserLoggedIn = where("uid", "==", currentUser.uid);
     const filter = postFilter?.toLowerCase();
 
@@ -110,7 +110,7 @@ export default function OrdersHistory({ onBackClick }: OrdersHistoryProps) {
     });
 
     return () => unsubscribe();
-  }, [postFilter, setPosts, currentUser]);
+  }, [postFilter, setPosts, currentUser?.uid]);
 
   return (
     <div className="w-full max-w-[800px] mx-auto flex flex-col gap-6 p-4 sm:p-2">
